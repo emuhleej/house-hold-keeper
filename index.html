@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Household Information Hub</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,650;6..12,800&display=swap');
+
   :root {
     --plum: #584053;
     --teal: #8dc6bf;
@@ -26,9 +28,10 @@
     margin: 0;
     background: var(--paper);
     color: var(--ink);
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    font-family: "Nunito Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
     line-height: 1.45;
   }
+  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; }
   button, input, textarea, select { font: inherit; }
   button { cursor: pointer; }
   .shell { width: min(1120px, calc(100% - 24px)); margin: 0 auto; padding: 18px 0 32px; }
@@ -55,7 +58,7 @@
     color: rgba(255,255,255,.86);
     padding: 5px 9px;
     font-size: .82rem;
-    font-weight: 750;
+    font-weight: 800;
   }
 
   .btn {
@@ -64,7 +67,7 @@
     padding: 10px 13px;
     background: var(--plum);
     color: #fff;
-    font-weight: 750;
+    font-weight: 800;
   }
   .btn:hover { filter: brightness(.98); transform: translateY(-1px); }
   .btn.light { background: #fff; color: var(--plum); }
@@ -77,7 +80,13 @@
     display: grid;
     grid-template-columns: minmax(180px, 1fr) auto auto;
     gap: 10px;
-    margin: 16px 0;
+    margin: 16px 0 8px;
+  }
+  .utility-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 0 0 16px;
   }
   input, textarea, select {
     width: 100%;
@@ -87,13 +96,6 @@
     color: var(--ink);
     padding: 10px;
   }
-  input:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: var(--teal);
-    box-shadow: 0 0 0 3px rgba(141,198,191,.28);
-  }
-  textarea { min-height: 100px; resize: vertical; }
-
   .grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -114,68 +116,43 @@
     border-bottom: 1px solid var(--line);
     background: linear-gradient(90deg, var(--teal-soft), #fff);
   }
-  .category {
-    display: inline-flex;
-    width: fit-content;
-    max-width: 100%;
-    margin-bottom: 8px;
-    padding: 4px 8px;
-    border-radius: 999px;
-    border: 1px solid #ffe3aa;
-    background: var(--gold-soft);
-    color: var(--plum);
-    font-size: .76rem;
-    font-weight: 850;
-  }
-  .card h2 { margin: 0; color: var(--plum); font-size: 1.16rem; overflow-wrap: anywhere; }
-  .vendor { margin: 4px 0 0; color: var(--muted); font-weight: 650; overflow-wrap: anywhere; }
+  .card h2 { margin: 0; color: var(--plum); font-size: 1.16rem; }
+  .vendor { margin: 4px 0 0; color: var(--muted); font-weight: 650; }
   .card-body { display: grid; gap: 12px; padding: 14px; flex: 1; }
   .label {
     display: block;
     margin-bottom: 4px;
     color: var(--muted);
     font-size: .75rem;
-    font-weight: 850;
+    font-weight: 800;
     letter-spacing: .05em;
     text-transform: uppercase;
   }
-  .last-service {
+  .svc-history {
     display: grid;
-    gap: 10px;
+    gap: 8px;
     border: 1px solid #ffd9c8;
     border-left: 5px solid var(--coral);
     border-radius: 8px;
     background: var(--coral-soft);
     padding: 12px;
   }
-  .last-service h3 { margin: 0; color: var(--plum); font-size: 1rem; }
-  .date-pill {
-    display: inline-flex;
-    width: fit-content;
+  .svc-history h3 { margin: 0; color: var(--plum); font-size: 1rem; }
+  details.contact-card {
+    border: 1px solid #cdeae6;
     border-radius: 8px;
-    background: #fff;
-    color: #8f3c28;
-    padding: 5px 8px;
-    font-weight: 850;
-  }
-  .note { white-space: pre-wrap; overflow-wrap: anywhere; }
-  .contact { display: grid; gap: 5px; overflow-wrap: anywhere; }
-  .contact a { color: #237b73; font-weight: 750; text-decoration: none; }
-  .docs { display: flex; flex-wrap: wrap; gap: 6px; }
-  .doc {
-    max-width: 100%;
+    background: var(--teal-soft);
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: #fff;
-    color: var(--plum);
-    padding: 5px 8px;
-    font-size: .84rem;
-    font-weight: 750;
-    text-decoration: none;
   }
+  details.contact-card summary {
+    list-style: none;
+    padding: 9px 11px;
+    cursor: pointer;
+    color: #237b73;
+    font-weight: 800;
+  }
+  details.contact-card .contact { padding: 0 11px 11px; }
+  .docs { display: flex; flex-wrap: wrap; gap: 6px; }
   .card-actions {
     display: flex;
     justify-content: flex-end;
@@ -183,17 +160,6 @@
     padding: 12px 14px;
     border-top: 1px solid var(--line);
   }
-  .empty {
-    grid-column: 1 / -1;
-    border: 1px dashed #d8c8d1;
-    border-radius: 8px;
-    padding: 30px;
-    background: #fff;
-    color: var(--muted);
-    text-align: center;
-  }
-  .empty strong { display: block; color: var(--plum); font-size: 1.2rem; margin-bottom: 4px; }
-
   dialog {
     width: min(760px, calc(100vw - 24px));
     border: none;
@@ -229,25 +195,7 @@
   }
   label { display: grid; gap: 5px; color: var(--plum); font-size: .88rem; font-weight: 800; }
   .full { grid-column: 1 / -1; }
-  .upload-box {
-    border: 1px dashed #d0bdc7;
-    border-radius: 8px;
-    background: #fff;
-    padding: 12px;
-  }
-  .help { margin: 8px 0 0; color: var(--muted); font-size: .84rem; }
-  .attached { display: grid; gap: 8px; margin-top: 10px; }
-  .attached-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--teal-soft);
-    padding: 8px;
-  }
-  .attached-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  textarea { min-height: 100px; resize: vertical; }
   .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 
   @media (max-width: 900px) {
@@ -255,10 +203,7 @@
   }
   @media (max-width: 680px) {
     header { align-items: stretch; flex-direction: column; }
-    header .btn { width: 100%; }
     .toolbar, .grid, .form-grid { grid-template-columns: 1fr; }
-    .card-actions, .form-actions { justify-content: stretch; flex-wrap: wrap; }
-    .card-actions .btn, .form-actions .btn { flex: 1; }
   }
 </style>
 </head>
@@ -268,313 +213,168 @@
       <div>
         <h1>Household Information Hub</h1>
         <p class="subtitle">Service notes, vendor contacts, and household documents in one clean view.</p>
-        <span class="status" id="syncStatus">Saved on this device</span>
+        <span class="status">Preview mode</span>
       </div>
       <button class="btn light" id="addBtn">+ Add Page</button>
     </header>
 
-    <section class="toolbar" aria-label="Search and filter">
+    <section class="toolbar">
       <input id="searchInput" type="search" placeholder="Search title, vendor, notes, contacts, documents...">
-      <select id="categoryFilter" aria-label="Filter by category">
+      <select id="categoryFilter">
         <option value="all">All categories</option>
+        <option>HVAC</option>
+        <option>Plumbing</option>
+        <option>Insurance</option>
       </select>
-      <select id="sortSelect" aria-label="Sort pages">
-        <option value="recent">Newest service first</option>
-        <option value="oldest">Oldest service first</option>
-        <option value="title">Title A-Z</option>
-        <option value="vendor">Vendor A-Z</option>
+      <select id="sortSelect">
+        <option>Newest service first</option>
+        <option>Oldest service first</option>
+        <option>Next due soonest</option>
       </select>
     </section>
 
-    <section class="grid" id="cards" aria-live="polite"></section>
+    <section class="utility-row">
+      <button class="btn small ghost">Export backup</button>
+      <button class="btn small ghost">Import backup</button>
+      <button class="btn small ghost">PIN</button>
+    </section>
+
+    <section class="grid" id="cards">
+      <article class="card" data-search="hvac add your hvac vendor">
+        <div class="card-head">
+          <h2>HVAC</h2>
+          <p class="vendor">Add your HVAC vendor</p>
+        </div>
+        <div class="card-body">
+          <details class="contact-card">
+            <summary>Contact Info</summary>
+            <div class="contact">No contact info yet.</div>
+          </details>
+          <div>
+            <span class="label">Documents</span>
+            <span>No documents uploaded.</span>
+          </div>
+          <section class="svc-history">
+            <h3>Service History</h3>
+            <span>No services logged yet. Tap + Service to add one.</span>
+          </section>
+        </div>
+        <div class="card-actions">
+          <button class="btn small teal">+ Service</button>
+          <button class="btn small ghost">Edit</button>
+          <button class="btn small danger">Delete</button>
+        </div>
+      </article>
+
+      <article class="card" data-search="plumbing add your plumber">
+        <div class="card-head">
+          <h2>Plumbing</h2>
+          <p class="vendor">Add your plumber</p>
+        </div>
+        <div class="card-body">
+          <details class="contact-card">
+            <summary>Contact Info</summary>
+            <div class="contact">No contact info yet.</div>
+          </details>
+          <div>
+            <span class="label">Documents</span>
+            <span>No documents uploaded.</span>
+          </div>
+          <section class="svc-history">
+            <h3>Service History</h3>
+            <span>No services logged yet. Tap + Service to add one.</span>
+          </section>
+        </div>
+        <div class="card-actions">
+          <button class="btn small teal">+ Service</button>
+          <button class="btn small ghost">Edit</button>
+          <button class="btn small danger">Delete</button>
+        </div>
+      </article>
+
+      <article class="card" data-search="insurance add your insurance carrier">
+        <div class="card-head">
+          <h2>Insurance</h2>
+          <p class="vendor">Add your insurance carrier</p>
+        </div>
+        <div class="card-body">
+          <details class="contact-card">
+            <summary>Contact Info</summary>
+            <div class="contact">No contact info yet.</div>
+          </details>
+          <div>
+            <span class="label">Documents</span>
+            <span>No documents uploaded.</span>
+          </div>
+          <section class="svc-history">
+            <h3>Service History</h3>
+            <span>No services logged yet. Tap + Service to add one.</span>
+          </section>
+        </div>
+        <div class="card-actions">
+          <button class="btn small teal">+ Service</button>
+          <button class="btn small ghost">Edit</button>
+          <button class="btn small danger">Delete</button>
+        </div>
+      </article>
+    </section>
   </main>
 
   <dialog id="entryDialog">
     <div class="modal-head">
-      <h2 id="dialogTitle">Add Household Page</h2>
-      <button class="close" id="closeDialog" type="button" aria-label="Close">x</button>
+      <h2>Add Household Page</h2>
+      <button class="close" id="closeDialog">&times;</button>
     </div>
     <form id="entryForm">
-      <input type="hidden" id="entryId">
       <div class="form-grid">
-        <label>
-          Page title
-          <input id="title" required placeholder="HVAC, Roof, Water Heater, Pest Control">
+        <label>Category
+          <select><option>Appliances</option><option>HVAC</option><option>Plumbing</option><option>Insurance</option><option>Other</option></select>
         </label>
-        <label>
-          Category
-          <select id="category">
-            <option>Appliances</option>
-            <option>Electrical</option>
-            <option>Exterior</option>
-            <option>HVAC</option>
-            <option>Insurance</option>
-            <option>Interior</option>
-            <option>Landscaping</option>
-            <option>Plumbing</option>
-            <option>Security</option>
-            <option>Utilities</option>
-            <option>Warranty</option>
-            <option>Other</option>
-          </select>
-        </label>
-        <label>
-          Vendor
-          <input id="vendor" placeholder="Company or person">
-        </label>
-        <label>
-          Date of last service
-          <input id="lastDate" type="date">
-        </label>
-        <label class="full">
-          Note for what last services were performed
-          <textarea id="note" placeholder="What was done, parts replaced, next recommended service, cost, warranty notes..."></textarea>
-        </label>
-        <label>
-          Contact name
-          <input id="contactName" placeholder="Main contact">
-        </label>
-        <label>
-          Phone
-          <input id="phone" inputmode="tel" placeholder="(555) 123-4567">
-        </label>
-        <label>
-          Email
-          <input id="email" type="email" placeholder="service@example.com">
-        </label>
-        <label>
-          Website
-          <input id="website" type="url" placeholder="https://example.com">
-        </label>
-        <label class="full">
-          Address or account info
-          <input id="address" placeholder="Address, account number, policy number, or useful reference">
-        </label>
-        <div class="full upload-box">
-          <label>
-            Upload documents
-            <input id="documents" type="file" multiple>
-          </label>
-          <p class="help">Documents are saved in this browser with the page.</p>
-          <div class="attached" id="attachedDocs"></div>
+        <label>Vendor<input placeholder="Company or person"></label>
+        <label>Next service due<input type="date"></label>
+        <label>Contact name<input placeholder="Main contact"></label>
+        <label>Phone<input placeholder="(555) 123-4567"></label>
+        <label>Email<input type="email" placeholder="service@example.com"></label>
+        <div class="full" style="border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff;">
+          <span class="label">Service History</span>
+          <div id="serviceEditorList" style="display:grid;gap:8px;margin-bottom:12px;"></div>
+
+          <div style="display:grid;gap:10px;">
+            <label>
+              Service date
+              <input id="serviceDateInput" type="date">
+            </label>
+            <label>
+              What was done
+              <textarea id="serviceNoteInput" placeholder="What was done, parts replaced, cost, warranty notes..."></textarea>
+            </label>
+            <label>
+              Attach documents to this service date
+              <input id="serviceDocsInput" type="file" multiple>
+            </label>
+            <div id="serviceDocsPreview" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+            <button class="btn small teal" type="button" id="addServiceBtn">+ Add Service Entry</button>
+          </div>
         </div>
       </div>
       <div class="form-actions">
-        <button class="btn ghost" id="cancelBtn" type="button">Cancel</button>
+        <button class="btn ghost" type="button" id="cancelBtn">Cancel</button>
         <button class="btn teal" type="submit">Save Page</button>
       </div>
     </form>
   </dialog>
 
-<script src="firebase-config.js"></script>
 <script>
-  const STORAGE_KEY = "household-information-hub-v2";
-  const CLOUD_DOC_NOTE = "Documents stay saved in the browser where they were uploaded.";
-  const starterEntries = [
-    {
-      id: "starter-hvac",
-      title: "HVAC System",
-      category: "HVAC",
-      vendor: "Add your HVAC vendor",
-      lastDate: "",
-      note: "Add the last maintenance visit, filters changed, parts replaced, and next service recommendation.",
-      contactName: "",
-      phone: "",
-      email: "",
-      website: "",
-      address: "",
-      documents: []
-    },
-    {
-      id: "starter-plumbing",
-      title: "Plumbing",
-      category: "Plumbing",
-      vendor: "Add your plumber",
-      lastDate: "",
-      note: "Track repairs, shutoff details, warranty notes, and preferred emergency contact.",
-      contactName: "",
-      phone: "",
-      email: "",
-      website: "",
-      address: "",
-      documents: []
-    },
-    {
-      id: "starter-insurance",
-      title: "Home Insurance",
-      category: "Insurance",
-      vendor: "Add your insurance carrier",
-      lastDate: "",
-      note: "Keep policy renewal details, claim contacts, deductibles, and coverage notes here.",
-      contactName: "",
-      phone: "",
-      email: "",
-      website: "",
-      address: "",
-      documents: []
-    }
-  ];
-
-  let entries = loadEntries();
-  let draftDocs = [];
-  let saveTimer = null;
-  let applyingRemote = false;
-  let firebaseSync = {
-    ready: false,
-    docRef: null,
-    onSnapshot: null,
-    setDoc: null,
-    lastRemoteAt: null
-  };
-
-  const cards = document.getElementById("cards");
   const dialog = document.getElementById("entryDialog");
-  const form = document.getElementById("entryForm");
-  const addBtn = document.getElementById("addBtn");
-  const closeDialog = document.getElementById("closeDialog");
-  const cancelBtn = document.getElementById("cancelBtn");
-  const searchInput = document.getElementById("searchInput");
-  const categoryFilter = document.getElementById("categoryFilter");
-  const sortSelect = document.getElementById("sortSelect");
-  const documentsInput = document.getElementById("documents");
-  const attachedDocs = document.getElementById("attachedDocs");
-  const syncStatus = document.getElementById("syncStatus");
+  const serviceDateInput = document.getElementById("serviceDateInput");
+  const serviceNoteInput = document.getElementById("serviceNoteInput");
+  const serviceDocsInput = document.getElementById("serviceDocsInput");
+  const serviceDocsPreview = document.getElementById("serviceDocsPreview");
+  const serviceEditorList = document.getElementById("serviceEditorList");
+  const addServiceBtn = document.getElementById("addServiceBtn");
 
-  function loadEntries() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return starterEntries;
-    try {
-      const parsed = JSON.parse(saved);
-      return Array.isArray(parsed) ? parsed : starterEntries;
-    } catch {
-      return starterEntries;
-    }
-  }
-
-  function saveEntries() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-    if (!applyingRemote) queueCloudSave();
-  }
-
-  function updateSyncStatus(message) {
-    syncStatus.textContent = message;
-  }
-
-  function hasFirebaseConfig() {
-    const cfg = window.HH_FIREBASE_CONFIG || {};
-    return !!(cfg.apiKey && cfg.projectId && cfg.appId && !String(cfg.apiKey).includes("PASTE_"));
-  }
-
-  function entriesForCloud() {
-    return entries.map(entry => ({
-      ...entry,
-      documents: (entry.documents || []).map(doc => ({
-        name: doc.name,
-        type: doc.type || "",
-        size: doc.size || 0,
-        storedLocally: true
-      }))
-    }));
-  }
-
-  function mergeCloudEntries(cloudEntries) {
-    const localDocs = new Map(entries.map(entry => [entry.id, entry.documents || []]));
-    return cloudEntries.map(entry => {
-      const cloudDocs = entry.documents || [];
-      const savedDocs = localDocs.get(entry.id) || [];
-      const docs = cloudDocs.map(cloudDoc => {
-        const saved = savedDocs.find(doc => doc.name === cloudDoc.name && doc.size === cloudDoc.size);
-        return saved || cloudDoc;
-      });
-      return { ...entry, documents: docs };
-    });
-  }
-
-  function queueCloudSave() {
-    clearTimeout(saveTimer);
-    if (!firebaseSync.ready) {
-      updateSyncStatus("Saved on this device");
-      return;
-    }
-    updateSyncStatus("Saving shared details...");
-    saveTimer = setTimeout(saveToCloud, 450);
-  }
-
-  async function saveToCloud() {
-    if (!firebaseSync.ready) return;
-    try {
-      const updatedAt = new Date().toISOString();
-      firebaseSync.lastRemoteAt = updatedAt;
-      await firebaseSync.setDoc(firebaseSync.docRef, {
-        entries: entriesForCloud(),
-        updatedAt,
-        note: CLOUD_DOC_NOTE
-      }, { merge: true });
-      updateSyncStatus("Synced with Firebase");
-    } catch {
-      updateSyncStatus("Saved here; Firebase sync failed");
-    }
-  }
-
-  async function initFirebaseSync() {
-    if (!hasFirebaseConfig()) {
-      updateSyncStatus("Saved on this device - add Firebase config to sync");
-      return;
-    }
-    try {
-      updateSyncStatus("Connecting to Firebase...");
-      const appMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js");
-      const authMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js");
-      const fireMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
-      const app = appMod.initializeApp(window.HH_FIREBASE_CONFIG);
-      const auth = authMod.getAuth(app);
-      await authMod.signInAnonymously(auth);
-      const db = fireMod.getFirestore(app);
-      const docPath = window.HH_FIREBASE_DOC_PATH || "households/default";
-      firebaseSync = {
-        ready: true,
-        docRef: fireMod.doc(db, ...docPath.split("/")),
-        onSnapshot: fireMod.onSnapshot,
-        setDoc: fireMod.setDoc,
-        lastRemoteAt: null
-      };
-
-      const snap = await fireMod.getDoc(firebaseSync.docRef);
-      if (snap.exists() && Array.isArray(snap.data().entries)) {
-        applyingRemote = true;
-        entries = mergeCloudEntries(snap.data().entries);
-        firebaseSync.lastRemoteAt = snap.data().updatedAt || null;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-        applyingRemote = false;
-        renderCards();
-        updateSyncStatus("Loaded shared Firebase data");
-      } else {
-        await saveToCloud();
-      }
-
-      firebaseSync.onSnapshot(firebaseSync.docRef, snap => {
-        if (!snap.exists() || !Array.isArray(snap.data().entries)) return;
-        const updatedAt = snap.data().updatedAt || null;
-        if (updatedAt && updatedAt === firebaseSync.lastRemoteAt) return;
-        firebaseSync.lastRemoteAt = updatedAt;
-        applyingRemote = true;
-        entries = mergeCloudEntries(snap.data().entries);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-        applyingRemote = false;
-        renderCards();
-        updateSyncStatus("Updated from Firebase");
-      });
-      updateSyncStatus("Synced with Firebase");
-    } catch {
-      firebaseSync.ready = false;
-      updateSyncStatus("Firebase not connected - saved on this device");
-    }
-  }
-
-  function uid() {
-    if (crypto.randomUUID) return crypto.randomUUID();
-    return `entry-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  }
+  let draftServiceDocs = [];
+  let draftServices = [];
 
   function escapeHtml(value) {
     return String(value || "")
@@ -585,222 +385,116 @@
       .replaceAll("'", "&#039;");
   }
 
-  function formatDate(dateString) {
-    if (!dateString) return "No date yet";
-    const date = new Date(`${dateString}T00:00:00`);
-    return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-  }
-
-  function searchable(entry) {
-    return [
-      entry.title,
-      entry.category,
-      entry.vendor,
-      entry.lastDate,
-      entry.note,
-      entry.contactName,
-      entry.phone,
-      entry.email,
-      entry.website,
-      entry.address,
-      ...(entry.documents || []).map(doc => doc.name)
-    ].join(" ").toLowerCase();
-  }
-
-  function filteredEntries() {
-    const query = searchInput.value.trim().toLowerCase();
-    const category = categoryFilter.value;
-    const sort = sortSelect.value;
-    const list = entries.filter(entry => {
-      const matchesQuery = !query || searchable(entry).includes(query);
-      const matchesCategory = category === "all" || entry.category === category;
-      return matchesQuery && matchesCategory;
+  function renderServiceDocsPreview() {
+    serviceDocsPreview.innerHTML = "";
+    draftServiceDocs.forEach((doc, index) => {
+      const chip = document.createElement("div");
+      chip.style.cssText = "display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:var(--teal-soft);";
+      chip.innerHTML = `
+        <span style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(doc.name)}</span>
+        <button type="button" class="btn small ghost" data-remove-draft-doc="${index}" style="padding:3px 7px;">×</button>`;
+      serviceDocsPreview.appendChild(chip);
     });
-
-    list.sort((a, b) => {
-      if (sort === "title") return (a.title || "").localeCompare(b.title || "");
-      if (sort === "vendor") return (a.vendor || "").localeCompare(b.vendor || "");
-      const aTime = a.lastDate ? new Date(a.lastDate).getTime() : 0;
-      const bTime = b.lastDate ? new Date(b.lastDate).getTime() : 0;
-      return sort === "oldest" ? aTime - bTime : bTime - aTime;
-    });
-    return list;
   }
 
-  function renderCategoryOptions() {
-    const current = categoryFilter.value;
-    const categories = [...new Set(entries.map(entry => entry.category).filter(Boolean))].sort();
-    categoryFilter.innerHTML = '<option value="all">All categories</option>';
-    categories.forEach(category => {
-      const option = document.createElement("option");
-      option.value = category;
-      option.textContent = category;
-      categoryFilter.appendChild(option);
-    });
-    categoryFilter.value = categories.includes(current) ? current : "all";
-  }
-
-  function renderCards() {
-    renderCategoryOptions();
-    const list = filteredEntries();
-    cards.innerHTML = "";
-
-    if (!list.length) {
-      cards.innerHTML = '<div class="empty"><strong>No pages found</strong>Add a new household page or change your search.</div>';
+  function renderServiceEditorList() {
+    serviceEditorList.innerHTML = "";
+    if (!draftServices.length) {
+      serviceEditorList.innerHTML = '<span style="color:var(--muted);font-size:.9rem;">No service entries added yet.</span>';
       return;
     }
 
-    list.forEach(entry => {
-      const article = document.createElement("article");
-      article.className = "card";
-      const phone = entry.phone ? `<a href="tel:${entry.phone.replace(/[^\d+]/g, "")}">${escapeHtml(entry.phone)}</a>` : "";
-      const email = entry.email ? `<a href="mailto:${escapeHtml(entry.email)}">${escapeHtml(entry.email)}</a>` : "";
-      const site = entry.website ? `<a href="${escapeHtml(entry.website)}" target="_blank" rel="noreferrer">${escapeHtml(entry.website.replace(/^https?:\/\//, ""))}</a>` : "";
-      const docs = (entry.documents || []).map(doc => `<a class="doc" href="${doc.data}" download="${escapeHtml(doc.name)}">${escapeHtml(doc.name)}</a>`).join("");
-
-      article.innerHTML = `
-        <div class="card-head">
-          <div class="category">${escapeHtml(entry.category || "Other")}</div>
-          <h2>${escapeHtml(entry.title || "Untitled Page")}</h2>
-          <p class="vendor">${escapeHtml(entry.vendor || "No vendor yet")}</p>
-        </div>
-        <div class="card-body">
-          <section class="last-service">
-            <h3>Last Service</h3>
+    [...draftServices]
+      .sort((a, b) => (b.date || "").localeCompare(a.date || ""))
+      .forEach(service => {
+        const item = document.createElement("div");
+        item.style.cssText = "border:1px solid #ffd9c8;border-left:5px solid var(--coral);border-radius:8px;background:var(--coral-soft);padding:10px;";
+        item.innerHTML = `
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;">
             <div>
-              <span class="label">Date</span>
-              <span class="date-pill">${formatDate(entry.lastDate)}</span>
+              <strong>${service.date || "No date"}</strong>
+              <div style="white-space:pre-wrap;margin-top:4px;">${escapeHtml(service.note || "No note")}</div>
+              ${service.documents.length ? `
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+                  ${service.documents.map(doc => `<span style="border:1px solid var(--line);border-radius:999px;background:#fff;padding:4px 8px;font-size:.82rem;">📎 ${escapeHtml(doc.name)}</span>`).join("")}
+                </div>` : ""}
             </div>
-            <div>
-              <span class="label">Services performed</span>
-              <div class="note">${escapeHtml(entry.note || "No service note yet.")}</div>
-            </div>
-          </section>
-          <div>
-            <span class="label">Contact Info</span>
-            <div class="contact">
-              ${entry.contactName ? `<span>${escapeHtml(entry.contactName)}</span>` : ""}
-              ${phone}
-              ${email}
-              ${site}
-              ${entry.address ? `<span>${escapeHtml(entry.address)}</span>` : ""}
-              ${!entry.contactName && !entry.phone && !entry.email && !entry.website && !entry.address ? "<span>No contact info yet.</span>" : ""}
-            </div>
-          </div>
-          <div>
-            <span class="label">Documents</span>
-            <div class="docs">${docs || "<span>No documents uploaded.</span>"}</div>
-          </div>
-        </div>
-        <div class="card-actions">
-          <button class="btn small ghost" data-action="edit" data-id="${entry.id}">Edit</button>
-          <button class="btn small danger" data-action="delete" data-id="${entry.id}">Delete</button>
-        </div>
-      `;
-      cards.appendChild(article);
-    });
+            <button type="button" class="btn small danger" data-remove-service="${service.id}">Remove</button>
+          </div>`;
+        serviceEditorList.appendChild(item);
+      });
   }
 
-  function openEditor(entry = null) {
-    form.reset();
-    draftDocs = entry ? structuredClone(entry.documents || []) : [];
-    document.getElementById("dialogTitle").textContent = entry ? "Edit Household Page" : "Add Household Page";
-    document.getElementById("entryId").value = entry?.id || "";
-    document.getElementById("title").value = entry?.title || "";
-    document.getElementById("category").value = entry?.category || "Other";
-    document.getElementById("vendor").value = entry?.vendor || "";
-    document.getElementById("lastDate").value = entry?.lastDate || "";
-    document.getElementById("note").value = entry?.note || "";
-    document.getElementById("contactName").value = entry?.contactName || "";
-    document.getElementById("phone").value = entry?.phone || "";
-    document.getElementById("email").value = entry?.email || "";
-    document.getElementById("website").value = entry?.website || "";
-    document.getElementById("address").value = entry?.address || "";
-    renderAttachedDocs();
+  function addServiceEntry() {
+    const date = serviceDateInput.value;
+    const note = serviceNoteInput.value.trim();
+    if (!date && !note && !draftServiceDocs.length) return;
+
+    draftServices.push({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      date,
+      note,
+      documents: draftServiceDocs.map(doc => ({ name: doc.name, size: doc.size, type: doc.type }))
+    });
+
+    serviceDateInput.value = "";
+    serviceNoteInput.value = "";
+    serviceDocsInput.value = "";
+    draftServiceDocs = [];
+    renderServiceDocsPreview();
+    renderServiceEditorList();
+  }
+
+  document.getElementById("addBtn").addEventListener("click", () => {
+    draftServices = [];
+    draftServiceDocs = [];
+    renderServiceEditorList();
+    renderServiceDocsPreview();
     dialog.showModal();
-  }
+  });
 
-  function renderAttachedDocs() {
-    attachedDocs.innerHTML = "";
-    draftDocs.forEach((doc, index) => {
-      const row = document.createElement("div");
-      row.className = "attached-row";
-      row.innerHTML = `<span>${escapeHtml(doc.name)}</span><button class="btn small ghost" type="button" data-remove-doc="${index}">Remove</button>`;
-      attachedDocs.appendChild(row);
-    });
-  }
+  document.getElementById("closeDialog").addEventListener("click", () => dialog.close());
+  document.getElementById("cancelBtn").addEventListener("click", () => dialog.close());
 
-  function readFileAsDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve({ name: file.name, type: file.type, size: file.size, data: reader.result });
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
+  serviceDocsInput.addEventListener("change", event => {
+    draftServiceDocs = [...draftServiceDocs, ...Array.from(event.target.files)];
+    serviceDocsInput.value = "";
+    renderServiceDocsPreview();
+  });
 
-  addBtn.addEventListener("click", () => openEditor());
-  closeDialog.addEventListener("click", () => dialog.close());
-  cancelBtn.addEventListener("click", () => dialog.close());
-  searchInput.addEventListener("input", renderCards);
-  categoryFilter.addEventListener("change", renderCards);
-  sortSelect.addEventListener("change", renderCards);
-
-  cards.addEventListener("click", event => {
-    const button = event.target.closest("button");
+  serviceDocsPreview.addEventListener("click", event => {
+    const button = event.target.closest("[data-remove-draft-doc]");
     if (!button) return;
-    const entry = entries.find(item => item.id === button.dataset.id);
-    if (button.dataset.action === "edit" && entry) openEditor(entry);
-    if (button.dataset.action === "delete" && entry && confirm(`Delete "${entry.title}"?`)) {
-      entries = entries.filter(item => item.id !== entry.id);
-      saveEntries();
-      renderCards();
+    draftServiceDocs.splice(Number(button.dataset.removeDraftDoc), 1);
+    renderServiceDocsPreview();
+  });
+
+  serviceEditorList.addEventListener("click", event => {
+    const button = event.target.closest("[data-remove-service]");
+    if (!button) return;
+    draftServices = draftServices.filter(service => service.id !== button.dataset.removeService);
+    renderServiceEditorList();
+  });
+
+  addServiceBtn.addEventListener("click", addServiceEntry);
+
+  document.getElementById("entryForm").addEventListener("submit", e => {
+    e.preventDefault();
+    if (serviceDateInput.value || serviceNoteInput.value.trim() || draftServiceDocs.length) {
+      addServiceEntry();
     }
-  });
-
-  documentsInput.addEventListener("change", async event => {
-    const files = [...event.target.files];
-    const converted = await Promise.all(files.map(readFileAsDataUrl));
-    draftDocs = [...draftDocs, ...converted];
-    documentsInput.value = "";
-    renderAttachedDocs();
-  });
-
-  attachedDocs.addEventListener("click", event => {
-    const button = event.target.closest("[data-remove-doc]");
-    if (!button) return;
-    draftDocs.splice(Number(button.dataset.removeDoc), 1);
-    renderAttachedDocs();
-  });
-
-  form.addEventListener("submit", event => {
-    event.preventDefault();
-    const id = document.getElementById("entryId").value || uid();
-    const entry = {
-      id,
-      title: document.getElementById("title").value.trim(),
-      category: document.getElementById("category").value,
-      vendor: document.getElementById("vendor").value.trim(),
-      lastDate: document.getElementById("lastDate").value,
-      note: document.getElementById("note").value.trim(),
-      contactName: document.getElementById("contactName").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
-      email: document.getElementById("email").value.trim(),
-      website: document.getElementById("website").value.trim(),
-      address: document.getElementById("address").value.trim(),
-      documents: draftDocs
-    };
-
-    entries = entries.some(item => item.id === id)
-      ? entries.map(item => item.id === id ? entry : item)
-      : [entry, ...entries];
-    saveEntries();
     dialog.close();
-    renderCards();
   });
 
-  renderCards();
-  initFirebaseSync();
+  const search = document.getElementById("searchInput");
+  search.addEventListener("input", () => {
+    const q = search.value.toLowerCase().trim();
+    document.querySelectorAll(".card").forEach(card => {
+      card.style.display = card.dataset.search.includes(q) ? "" : "none";
+    });
+  });
+
+  renderServiceEditorList();
 </script>
 </body>
 </html>

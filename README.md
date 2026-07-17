@@ -1,25 +1,17 @@
 # Household Information Hub
 
-Static GitHub Pages friendly household information tracker for Notion embeds.
+Static GitHub Pages version of the Household Information Hub.
 
-It can run by itself in one browser, or sync shared service details through Firebase Firestore after you fill in `firebase-config.js`.
+## Included
+- `index.html` — the complete webpage
+- Service history entries with a separate date, note, and document attachments
+- Search and responsive mobile layout
 
-## Files
+## Publish with GitHub Pages
+1. Upload `index.html` and `README.md` to the root of your repository.
+2. Open **Settings → Pages**.
+3. Under **Build and deployment**, choose **Deploy from a branch**.
+4. Select your main branch and `/root`, then save.
 
-- `index.html` contains the full app.
-- `firebase-config.js` is where the Firebase web app config goes.
-- `DEPLOY.md` has the no-download GitHub Pages + Firebase setup steps.
-- `.nojekyll` helps GitHub Pages serve the folder as plain static files.
-
-## Notion Embed
-
-1. Publish this folder with GitHub Pages.
-2. Copy the public URL for the page.
-3. In Notion, type `/embed`.
-4. Paste the URL.
-
-## Notes
-
-Without Firebase, entries and uploaded documents are saved in the browser that opens the app.
-
-With Firebase configured, household page details sync through Firestore. Uploaded documents still stay saved in the browser where they were added.
+## Storage note
+This version does not use Firebase. Any browser-only data or files are limited to the browser/device where they are added and will not sync between devices.
