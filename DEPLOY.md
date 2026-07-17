@@ -1,8 +1,8 @@
 # Deploy With GitHub Pages + Firebase
 
-GitHub Pages hosts the household hub. Firebase Firestore stores the shared household service, vendor, and contact details.
+GitHub Pages hosts the household hub. Firebase Firestore stores the shared household details, and Firebase Storage (optional but recommended) syncs uploaded documents across devices.
 
-Uploaded documents stay saved in the browser where they were added. To sync actual files across devices later, add Firebase Storage.
+If you already deployed an earlier version: just replace `index.html` in the repo and do step 6 below to turn on document sync. Existing data migrates automatically the first time each device opens the new version.
 
 ## 1. Create Firebase Project
 
@@ -49,9 +49,35 @@ service cloud.firestore {
 }
 ```
 
-Anyone with the page link can anonymously read and edit this one household document, so keep the link private.
+Anyone with the page link can anonymously read and edit this one household document, so keep the link private. For extra protection, set a PIN inside the app (the `PIN` button) - it locks the page on every synced device.
 
-## 6. Upload To GitHub
+## 6. Turn On Firebase Storage (Document Sync)
+
+This step makes uploaded documents appear on every device instead of only the one where they were added.
+
+1. In Firebase, open `Storage` in the left menu.
+2. Click `Get started` and accept the defaults (production mode, same location as Firestore).
+3. Open the `Rules` tab and replace the rules with:
+
+```js
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /households/home/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+```
+
+4. Click `Publish`.
+
+That's it - no code changes needed. The app detects Storage automatically. If Storage is not set up, documents quietly fall back to browser-only storage and everything else still works.
+
+Note: the Firebase free (Spark) plan includes 5 GB of Storage, which is plenty for household paperwork. If the Console asks you to upgrade to Blaze to enable Storage, you can add a budget alert of $0-1 for peace of mind - normal household use should stay within the free allowance.
+
+## 7. Upload To GitHub
 
 Upload the contents of this folder, not the folder itself:
 
@@ -61,7 +87,7 @@ Upload the contents of this folder, not the folder itself:
 - `DEPLOY.md`
 - `.nojekyll`
 
-## 7. Turn On GitHub Pages
+## 8. Turn On GitHub Pages
 
 In the GitHub repo:
 
@@ -76,9 +102,13 @@ GitHub will give you a link like:
 
 `https://your-username.github.io/household-information-hub/`
 
-## 8. Use It In Notion
+## 9. Use It In Notion
 
 1. Open Notion.
 2. Type `/embed`.
 3. Paste the GitHub Pages link.
 4. Choose `Embed`.
+
+## Backups
+
+Use `Export backup` in the app now and then. It downloads a single JSON file containing every page, the full service history, and document data, and `Import backup` restores it anywhere.
