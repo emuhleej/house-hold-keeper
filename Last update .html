@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Household Information Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito+Sans:wght@400;650;800&display=swap');
+:root{--plum:#584053;--teal:#8dc6bf;--gold:#fcbc66;--coral:#f97b4f;--paper:#fbf8f5;--card:#fff;--ink:#342c33;--muted:#776973;--line:#eadfe5;--teal-soft:#edf8f6;--coral-soft:#fff0ea;--shadow:0 10px 28px rgba(88,64,83,.10)}
+*{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font-family:"Nunito Sans",system-ui,sans-serif;line-height:1.45}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif} button,input,textarea,select{font:inherit} button{cursor:pointer}
+.shell{width:min(1120px,calc(100% - 24px));margin:auto;padding:18px 0 32px}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--plum);color:#fff;border-radius:10px;padding:18px;box-shadow:var(--shadow)}
+h1{margin:0;font-size:clamp(1.4rem,4vw,2rem)} .subtitle{margin:5px 0 0;color:rgba(255,255,255,.78)}
+.status{display:inline-flex;margin-top:10px;border-radius:999px;background:rgba(255,255,255,.13);padding:5px 10px;font-size:.82rem;font-weight:800}
+.btn{border:1px solid transparent;border-radius:9px;padding:10px 13px;background:var(--plum);color:#fff;font-weight:800}
+.btn.light{background:#fff;color:var(--plum)} .btn.ghost{background:transparent;color:var(--plum);border-color:var(--line)}
+.btn.teal{background:#2f8f87}.btn.danger{background:#b84a31}.btn.small{padding:7px 10px;font-size:.88rem}.btn:disabled{opacity:.55}
+.toolbar{display:grid;grid-template-columns:minmax(180px,1fr) auto auto;gap:10px;margin:16px 0 8px}
+.utility-row{display:flex;justify-content:flex-end;gap:8px;margin:0 0 16px;flex-wrap:wrap}
+input,textarea,select{width:100%;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);padding:10px}
+textarea{min-height:90px;resize:vertical} input:focus,textarea:focus,select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(141,198,191,.25)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.card{display:flex;flex-direction:column;min-height:290px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+.card-head{padding:14px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,var(--teal-soft),#fff)}
+.card h2{margin:0;color:var(--plum);font-size:1.2rem}.vendor{margin:4px 0 0;color:var(--muted);font-weight:650}
+.due{display:inline-flex;margin-top:8px;border-radius:999px;padding:4px 9px;font-size:.78rem;font-weight:800;background:var(--teal-soft);color:#237b73}
+.card-body{display:grid;gap:12px;padding:14px;flex:1}.label{display:block;margin-bottom:4px;color:var(--muted);font-size:.75rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.contact-card{border:1px solid #cdeae6;border-radius:9px;background:var(--teal-soft);overflow:hidden}.contact-card summary{list-style:none;padding:10px 12px;cursor:pointer;color:#237b73;font-weight:800}.contact-card .contact{padding:0 12px 12px;display:grid;gap:5px;overflow-wrap:anywhere}.contact a{color:#237b73;font-weight:750;text-decoration:none}
+.svc-history{display:grid;gap:9px;border:1px solid #ffd9c8;border-left:5px solid var(--coral);border-radius:9px;background:var(--coral-soft);padding:12px}.svc-history h3{margin:0;color:var(--plum)}
+.service-item{border-top:1px dashed #ffcdb8;padding-top:9px}.service-item:first-of-type{border-top:0;padding-top:0}.service-note{white-space:pre-wrap;overflow-wrap:anywhere}
+.docs{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}.doc{border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--plum);padding:5px 8px;font-size:.82rem;font-weight:750;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 14px;border-top:1px solid var(--line)}
+.empty{grid-column:1/-1;border:1px dashed #d8c8d1;border-radius:10px;padding:30px;background:#fff;color:var(--muted);text-align:center}
+dialog{width:min(760px,calc(100vw - 24px));border:none;border-radius:10px;padding:0;box-shadow:0 24px 70px rgba(52,44,51,.28)}
+dialog::backdrop{background:rgba(40,31,38,.48)}.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--plum);color:#fff;padding:16px}.modal-head h2{margin:0;font-size:1.2rem}
+.close{width:34px;height:34px;border:1px solid rgba(255,255,255,.32);border-radius:8px;background:rgba(255,255,255,.12);color:#fff;font-size:1.1rem}
+form{padding:16px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{display:grid;gap:5px;color:var(--plum);font-size:.88rem;font-weight:800}.full{grid-column:1/-1}
+.upload-box{border:1px dashed #d0bdc7;border-radius:9px;background:#fff;padding:12px}.attached{display:grid;gap:8px;margin-top:10px}.attached-row{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:8px;background:var(--teal-soft);padding:8px}.attached-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.service-editor{display:grid;gap:10px}.service-list{display:grid;gap:8px;margin-bottom:12px}.help{margin:6px 0;color:var(--muted);font-size:.84rem}
+#pinOverlay{position:fixed;inset:0;background:var(--plum);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}#pinOverlay.active{display:flex}.lock-card{width:min(380px,100%);background:#fff;border-radius:10px;padding:24px;display:grid;gap:12px;text-align:center}.lock-card h2{margin:0;color:var(--plum)}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){header{align-items:stretch;flex-direction:column}.toolbar,.grid,.form-grid{grid-template-columns:1fr}.card-actions,.form-actions{flex-wrap:wrap}.card-actions .btn,.form-actions .btn{flex:1}}
+</style>
+</head>
+<body>
+<div id="pinOverlay">
+  <div class="lock-card">
+    <h2>Household Hub locked</h2>
+    <p>Enter your PIN.</p>
+    <input id="unlockPin" type="password" inputmode="numeric" placeholder="PIN">
+    <p id="unlockError" style="color:#b84a31;font-weight:800;min-height:1em"></p>
+    <button class="btn teal" id="unlockBtn">Unlock</button>
+  </div>
+</div>
+
+<main class="shell">
+<header>
+  <div>
+    <h1>Household Information Hub</h1>
+    <p class="subtitle">Service notes, vendor contacts, and household documents in one clean view.</p>
+    <span class="status" id="statusText">Saved on this device</span>
+  </div>
+  <button class="btn light" id="addBtn">+ Add Page</button>
+</header>
+
+<section class="toolbar">
+  <input id="searchInput" type="search" placeholder="Search category, vendor, notes, contacts, documents...">
+  <select id="categoryFilter"><option value="all">All categories</option></select>
+  <select id="sortSelect">
+    <option value="recent">Newest service first</option>
+    <option value="oldest">Oldest service first</option>
+    <option value="due">Next due soonest</option>
+    <option value="category">Category A-Z</option>
+    <option value="vendor">Vendor A-Z</option>
+  </select>
+</section>
+
+<section class="utility-row">
+  <button class="btn small ghost" id="exportBtn">Export backup</button>
+  <button class="btn small ghost" id="importBtn">Import backup</button>
+  <button class="btn small ghost" id="pinBtn">PIN</button>
+  <input id="importFile" type="file" accept="application/json" hidden>
+</section>
+
+<section class="grid" id="cards"></section>
+</main>
+
+<dialog id="entryDialog">
+<div class="modal-head">
+  <h2 id="dialogTitle">Add Household Page</h2>
+  <button class="close" id="closeDialog" type="button">&times;</button>
+</div>
+<form id="entryForm">
+<input type="hidden" id="entryId">
+<div class="form-grid">
+<label>Category
+<select id="category">
+<option>Appliances</option><option>Electrical</option><option>Exterior</option><option>HVAC</option><option>Insurance</option><option>Interior</option><option>Landscaping</option><option>Plumbing</option><option>Security</option><option>Utilities</option><option>Warranty</option><option>Other</option>
+</select></label>
+<label>Vendor<input id="vendor" placeholder="Company or person"></label>
+<label>Next service due<input id="nextDate" type="date"></label>
+<label>Contact name<input id="contactName" placeholder="Main contact"></label>
+<label>Phone<input id="phone" inputmode="tel" placeholder="(555) 123-4567"></label>
+<label>Email<input id="email" type="email" placeholder="service@example.com"></label>
+<label>Website<input id="website" placeholder="example.com"></label>
+<label>Address or account info<input id="address" placeholder="Address, policy number, account number..."></label>
+
+<div class="full upload-box">
+  <span class="label">General page documents</span>
+  <input id="pageDocsInput" type="file" multiple>
+  <div class="attached" id="pageDocsList"></div>
+</div>
+
+<div class="full upload-box">
+  <span class="label">Service history</span>
+  <div class="service-list" id="serviceList"></div>
+  <div class="service-editor">
+    <label>Service date<input id="svcDate" type="date"></label>
+    <label>What was done<textarea id="svcNote" placeholder="What was done, parts replaced, cost, warranty notes..."></textarea></label>
+    <label>Attach documents to this service date<input id="svcDocsInput" type="file" multiple></label>
+    <div class="attached" id="svcDocsList"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn small teal" id="addServiceBtn" type="button">+ Add Service</button>
+      <button class="btn small ghost" id="cancelServiceEdit" type="button" hidden>Cancel edit</button>
+    </div>
+  </div>
+</div>
+</div>
+<div class="form-actions">
+  <button class="btn ghost" id="cancelBtn" type="button">Cancel</button>
+  <button class="btn teal" id="saveBtn" type="submit">Save Page</button>
+</div>
+</form>
+</dialog>
+
+<dialog id="pinDialog">
+<div class="modal-head"><h2>Set or remove PIN</h2><button class="close" id="pinClose" type="button">&times;</button></div>
+<form id="pinForm">
+<label>Current PIN<input id="currentPin" type="password" inputmode="numeric"></label>
+<label>New PIN<input id="newPin" type="password" inputmode="numeric" placeholder="Leave blank to remove"></label>
+<p class="help">PIN protection is local to this browser. It is not cloud security.</p>
+<p id="pinError" style="color:#b84a31;font-weight:800;min-height:1em"></p>
+<div class="form-actions"><button class="btn ghost" id="pinCancel" type="button">Cancel</button><button class="btn teal" type="submit">Save PIN</button></div>
+</form>
+</dialog>
+
+<script>
+const STORAGE_KEY="household-hub-local-v4";
+const PIN_KEY="household-hub-pin-v1";
+const DB_NAME="household-hub-docs-v1";
+const STORE_NAME="docs";
+
+let entries=[];
+let draftPageDocs=[];
+let draftServices=[];
+let draftSvcDocs=[];
+let editingServiceId=null;
+
+const $=id=>document.getElementById(id);
+const cards=$("cards"), dialog=$("entryDialog");
+
+function uid(){return crypto.randomUUID?crypto.randomUUID():`id-${Date.now()}-${Math.random().toString(16).slice(2)}`}
+function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function normalizeWebsite(v){v=(v||"").trim();return !v?"":/^https?:\/\//i.test(v)?v:`https://${v}`}
+function fmtDate(v){if(!v)return"No date";return new Date(v+"T00:00:00").toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"})}
+function latestService(entry){return [...(entry.services||[])].map(s=>s.date).filter(Boolean).sort().at(-1)||""}
+function setStatus(t){$("statusText").textContent=t}
+
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE_NAME))r.result.createObjectStore(STORE_NAME)};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function dbPut(id,data){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(STORE_NAME,"readwrite");tx.objectStore(STORE_NAME).put(data,id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+async function dbGet(id){const db=await openDB();return new Promise((resolve,reject)=>{const r=db.transaction(STORE_NAME).objectStore(STORE_NAME).get(id);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)})}
+async function dbDelete(id){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(STORE_NAME,"readwrite");tx.objectStore(STORE_NAME).delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+function fileToDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+async function persistFiles(items){const out=[];for(const item of items){if(item.docId){out.push(item);continue}const data=await fileToDataUrl(item.file);const docId=uid();await dbPut(docId,data);out.push({docId,name:item.file.name,type:item.file.type||"",size:item.file.size||0})}return out}
+async function removeDocs(docs){for(const d of docs||[])if(d.docId)try{await dbDelete(d.docId)}catch{}}
+
+function starterEntries(){return[
+{id:"starter-hvac",category:"HVAC",vendor:"Add your HVAC vendor",nextDate:"",contactName:"",phone:"",email:"",website:"",address:"",documents:[],services:[],updatedAt:""},
+{id:"starter-plumbing",category:"Plumbing",vendor:"Add your plumber",nextDate:"",contactName:"",phone:"",email:"",website:"",address:"",documents:[],services:[],updatedAt:""},
+{id:"starter-insurance",category:"Insurance",vendor:"Add your insurance carrier",nextDate:"",contactName:"",phone:"",email:"",website:"",address:"",documents:[],services:[],updatedAt:""}
+]}
+function load(){try{const p=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");entries=Array.isArray(p)?p:starterEntries()}catch{entries=starterEntries()}save()}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));setStatus("Saved on this device")}
+
+function allDocs(entry){return[...(entry.documents||[]),...(entry.services||[]).flatMap(s=>s.documents||[])]}
+function searchable(e){return[e.category,e.vendor,e.nextDate,e.contactName,e.phone,e.email,e.website,e.address,...(e.documents||[]).map(d=>d.name),...(e.services||[]).flatMap(s=>[s.date,s.note,...(s.documents||[]).map(d=>d.name)])].join(" ").toLowerCase()}
+
+function renderCategoryOptions(){const current=$("categoryFilter").value;const cats=[...new Set(entries.map(e=>e.category).filter(Boolean))].sort();$("categoryFilter").innerHTML='<option value="all">All categories</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");$("categoryFilter").value=cats.includes(current)?current:"all"}
+
+function render(){
+renderCategoryOptions();
+const q=$("searchInput").value.trim().toLowerCase(),cat=$("categoryFilter").value,sort=$("sortSelect").value;
+let list=entries.filter(e=>(!q||searchable(e).includes(q))&&(cat==="all"||e.category===cat));
+list.sort((a,b)=>{
+ if(sort==="category")return(a.category||"").localeCompare(b.category||"");
+ if(sort==="vendor")return(a.vendor||"").localeCompare(b.vendor||"");
+ if(sort==="due")return(a.nextDate?Date.parse(a.nextDate):Infinity)-(b.nextDate?Date.parse(b.nextDate):Infinity);
+ const av=latestService(a)?Date.parse(latestService(a)):0,bv=latestService(b)?Date.parse(latestService(b)):0;
+ return sort==="oldest"?av-bv:bv-av
+});
+cards.innerHTML="";
+if(!list.length){cards.innerHTML='<div class="empty">No pages found.</div>';return}
+for(const e of list){
+ const services=[...(e.services||[])].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+ const serviceHtml=services.length?services.map(s=>`<div class="service-item"><strong>${fmtDate(s.date)}</strong><div class="service-note">${esc(s.note||"No note")}</div>${(s.documents||[]).length?`<div class="docs">${s.documents.map(d=>`<button class="doc" data-open-doc="${d.docId}" data-name="${esc(d.name)}">📎 ${esc(d.name)}</button>`).join("")}</div>`:""}</div>`).join(""):"<span>No services logged yet.</span>";
+ const pageDocs=(e.documents||[]).length?`<div class="docs">${e.documents.map(d=>`<button class="doc" data-open-doc="${d.docId}" data-name="${esc(d.name)}">📎 ${esc(d.name)}</button>`).join("")}</div>`:"<span>No documents uploaded.</span>";
+ const due=e.nextDate?`<span class="due">Next: ${fmtDate(e.nextDate)}</span>`:"";
+ const a=e.website?normalizeWebsite(e.website):"";
+ const article=document.createElement("article");article.className="card";article.innerHTML=`
+ <div class="card-head"><h2>${esc(e.category||"Other")}</h2><p class="vendor">${esc(e.vendor||"No vendor yet")}</p>${due}</div>
+ <div class="card-body">
+ <details class="contact-card"><summary>Contact Info</summary><div class="contact">
+ ${e.contactName?`<span>${esc(e.contactName)}</span>`:""}${e.phone?`<a href="tel:${esc(e.phone.replace(/[^\d+]/g,""))}">${esc(e.phone)}</a>`:""}${e.email?`<a href="mailto:${esc(e.email)}">${esc(e.email)}</a>`:""}${a?`<a href="${esc(a)}" target="_blank" rel="noreferrer">${esc(e.website.replace(/^https?:\/\//,""))}</a>`:""}${e.address?`<span>${esc(e.address)}</span>`:""}${!e.contactName&&!e.phone&&!e.email&&!e.website&&!e.address?"<span>No contact info yet.</span>":""}
+ </div></details>
+ <div><span class="label">Documents</span>${pageDocs}</div>
+ <section class="svc-history"><h3>Service History</h3>${serviceHtml}</section>
+ </div>
+ <div class="card-actions"><button class="btn small teal" data-action="service" data-id="${e.id}">+ Service</button><button class="btn small ghost" data-action="edit" data-id="${e.id}">Edit</button><button class="btn small danger" data-action="delete" data-id="${e.id}">Delete</button></div>`;
+ cards.appendChild(article)
+}}
+
+function renderPageDocs(){$("pageDocsList").innerHTML=draftPageDocs.map((d,i)=>`<div class="attached-row"><span>${esc(d.name||d.file?.name)}</span><button class="btn small ghost" type="button" data-remove-page-doc="${i}">Remove</button></div>`).join("")}
+function renderSvcDocs(){$("svcDocsList").innerHTML=draftSvcDocs.map((d,i)=>`<div class="attached-row"><span>${esc(d.name||d.file?.name)}</span><button class="btn small ghost" type="button" data-remove-svc-doc="${i}">Remove</button></div>`).join("")}
+function renderServiceList(){if(!draftServices.length){$("serviceList").innerHTML='<p class="help">No services yet.</p>';return}$("serviceList").innerHTML=[...draftServices].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).map(s=>`<div class="attached-row"><span>${fmtDate(s.date)} · ${esc((s.note||"No note").slice(0,60))}${(s.documents||[]).length?` · ${(s.documents||[]).length} doc(s)`:""}</span><span style="display:flex;gap:6px"><button class="btn small ghost" type="button" data-edit-service="${s.id}">Edit</button><button class="btn small ghost" type="button" data-remove-service="${s.id}">Remove</button></span></div>`).join("")}
+function resetServiceEditor(){editingServiceId=null;draftSvcDocs=[];$("svcDate").value="";$("svcNote").value="";$("svcDocsInput").value="";$("addServiceBtn").textContent="+ Add Service";$("cancelServiceEdit").hidden=true;renderSvcDocs()}
+
+function openEditor(entry=null,focusService=false){
+ $("entryForm").reset();$("entryId").value=entry?.id||"";$("dialogTitle").textContent=entry?"Edit Household Page":"Add Household Page";
+ $("category").value=entry?.category||"Other";$("vendor").value=entry?.vendor||"";$("nextDate").value=entry?.nextDate||"";$("contactName").value=entry?.contactName||"";$("phone").value=entry?.phone||"";$("email").value=entry?.email||"";$("website").value=entry?.website||"";$("address").value=entry?.address||"";
+ draftPageDocs=structuredClone(entry?.documents||[]);draftServices=structuredClone(entry?.services||[]);resetServiceEditor();renderPageDocs();renderServiceList();dialog.showModal();if(focusService)$("svcNote").focus()
+}
+
+$("addBtn").addEventListener("click",()=>openEditor());
+$("closeDialog").addEventListener("click",()=>dialog.close());
+$("cancelBtn").addEventListener("click",()=>dialog.close());
+$("searchInput").addEventListener("input",render);
+$("categoryFilter").addEventListener("change",render);
+$("sortSelect").addEventListener("change",render);
+
+$("pageDocsInput").addEventListener("change",e=>{draftPageDocs.push(...[...e.target.files].map(file=>({file,name:file.name})));e.target.value="";renderPageDocs()});
+$("pageDocsList").addEventListener("click",e=>{const b=e.target.closest("[data-remove-page-doc]");if(!b)return;draftPageDocs.splice(Number(b.dataset.removePageDoc),1);renderPageDocs()});
+$("svcDocsInput").addEventListener("change",e=>{draftSvcDocs.push(...[...e.target.files].map(file=>({file,name:file.name})));e.target.value="";renderSvcDocs()});
+$("svcDocsList").addEventListener("click",e=>{const b=e.target.closest("[data-remove-svc-doc]");if(!b)return;draftSvcDocs.splice(Number(b.dataset.removeSvcDoc),1);renderSvcDocs()});
+
+$("addServiceBtn").addEventListener("click",async()=>{
+ const date=$("svcDate").value,note=$("svcNote").value.trim();if(!date&&!note&&!draftSvcDocs.length)return;
+ const docs=await persistFiles(draftSvcDocs);
+ if(editingServiceId){draftServices=draftServices.map(s=>s.id===editingServiceId?{...s,date,note,documents:docs}:s)}else{draftServices.push({id:uid(),date,note,documents:docs})}
+ resetServiceEditor();renderServiceList()
+});
+$("cancelServiceEdit").addEventListener("click",resetServiceEditor);
+$("serviceList").addEventListener("click",async e=>{
+ const eb=e.target.closest("[data-edit-service]");if(eb){const s=draftServices.find(x=>x.id===eb.dataset.editService);if(!s)return;editingServiceId=s.id;$("svcDate").value=s.date||"";$("svcNote").value=s.note||"";draftSvcDocs=structuredClone(s.documents||[]);$("addServiceBtn").textContent="Update Service";$("cancelServiceEdit").hidden=false;renderSvcDocs();return}
+ const rb=e.target.closest("[data-remove-service]");if(rb){const s=draftServices.find(x=>x.id===rb.dataset.removeService);await removeDocs(s?.documents||[]);draftServices=draftServices.filter(x=>x.id!==rb.dataset.removeService);resetServiceEditor();renderServiceList()}
+});
+
+$("entryForm").addEventListener("submit",async e=>{
+ e.preventDefault();$("saveBtn").disabled=true;
+ try{
+   if($("svcDate").value||$("svcNote").value.trim()||draftSvcDocs.length)await $("addServiceBtn").click();
+   const id=$("entryId").value||uid(),previous=entries.find(x=>x.id===id);
+   const documents=await persistFiles(draftPageDocs);
+   const entry={id,category:$("category").value,vendor:$("vendor").value.trim(),nextDate:$("nextDate").value,contactName:$("contactName").value.trim(),phone:$("phone").value.trim(),email:$("email").value.trim(),website:normalizeWebsite($("website").value),address:$("address").value.trim(),documents,services:draftServices,updatedAt:new Date().toISOString()};
+   entries=previous?entries.map(x=>x.id===id?entry:x):[entry,...entries];save();dialog.close();render()
+ }finally{$("saveBtn").disabled=false}
+});
+
+cards.addEventListener("click",async e=>{
+ const d=e.target.closest("[data-open-doc]");if(d){const data=await dbGet(d.dataset.openDoc);if(!data){alert("This document is not available in this browser.");return}const blob=await(await fetch(data)).blob(),url=URL.createObjectURL(blob);const w=window.open(url,"_blank");if(!w){const a=document.createElement("a");a.href=url;a.download=d.dataset.name||"document";a.click()}setTimeout(()=>URL.revokeObjectURL(url),60000);return}
+ const b=e.target.closest("[data-action]");if(!b)return;const entry=entries.find(x=>x.id===b.dataset.id);if(!entry)return;
+ if(b.dataset.action==="edit")openEditor(entry);
+ if(b.dataset.action==="service")openEditor(entry,true);
+ if(b.dataset.action==="delete"&&confirm(`Delete the ${entry.category||"household"} page?`)){await removeDocs(allDocs(entry));entries=entries.filter(x=>x.id!==entry.id);save();render()}
+});
+
+$("exportBtn").addEventListener("click",async()=>{
+ const docsData={};for(const e of entries)for(const d of allDocs(e))if(d.docId){const data=await dbGet(d.docId);if(data)docsData[d.docId]=data}
+ const blob=new Blob([JSON.stringify({app:"household-hub",version:4,exportedAt:new Date().toISOString(),entries,docsData})],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`household-hub-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),4000);setStatus("Backup exported")
+});
+$("importBtn").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;try{const p=JSON.parse(await f.text());if(!Array.isArray(p.entries))throw 0;if(!confirm(`Import ${p.entries.length} page(s)?`))return;for(const[id,data]of Object.entries(p.docsData||{}))await dbPut(id,data);entries=p.entries;save();render();setStatus("Backup imported")}catch{alert("That file is not a valid Household Hub backup.")}});
+
+async function hashPin(v){const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("hh:"+v));return[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+function currentHash(){return localStorage.getItem(PIN_KEY)||""}
+function maybeLock(){const h=currentHash();if(h&&sessionStorage.getItem("hh-unlocked")!==h)$("pinOverlay").classList.add("active")}
+async function unlock(){const h=await hashPin($("unlockPin").value);if(h===currentHash()){sessionStorage.setItem("hh-unlocked",h);$("pinOverlay").classList.remove("active");$("unlockError").textContent=""}else $("unlockError").textContent="That PIN does not match."}
+$("unlockBtn").addEventListener("click",unlock);$("unlockPin").addEventListener("keydown",e=>{if(e.key==="Enter")unlock()});
+$("pinBtn").addEventListener("click",()=>{$("pinForm").reset();$("pinError").textContent="";$("pinDialog").showModal()});
+$("pinClose").addEventListener("click",()=>$("pinDialog").close());$("pinCancel").addEventListener("click",()=>$("pinDialog").close());
+$("pinForm").addEventListener("submit",async e=>{e.preventDefault();const existing=currentHash(),current=$("currentPin").value,newValue=$("newPin").value.trim();if(existing&&await hashPin(current)!==existing){$("pinError").textContent="Current PIN does not match.";return}if(newValue&&!/^\d{4,}$/.test(newValue)){$("pinError").textContent="Use at least 4 digits.";return}if(newValue){const h=await hashPin(newValue);localStorage.setItem(PIN_KEY,h);sessionStorage.setItem("hh-unlocked",h)}else{localStorage.removeItem(PIN_KEY);sessionStorage.removeItem("hh-unlocked")}$("pinDialog").close();alert(newValue?"PIN saved.":"PIN removed.")});
+
+load();render();maybeLock();
+</script>
+</body>
+</html>
