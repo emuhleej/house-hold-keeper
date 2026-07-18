@@ -172,6 +172,15 @@
     padding: 12px;
   }
   .svc-history h3 { margin: 0; color: var(--plum); font-size: 1rem; }
+  details.svc-history summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+  }
+  details.svc-history summary .svc-count { margin-left: auto; }
   details.svc-group {
     border: 1px solid #ffd9c8;
     border-radius: 8px;
@@ -189,9 +198,9 @@
     color: #8f3c28;
     font-weight: 800;
   }
-  details.svc-group summary::-webkit-details-marker, details.contact-card summary::-webkit-details-marker { display: none; }
-  details.svc-group summary::after, details.contact-card summary::after { content: "\25BE"; transition: transform .15s; }
-  details.svc-group[open] summary::after, details.contact-card[open] summary::after { transform: rotate(180deg); }
+  details.svc-group summary::-webkit-details-marker, details.contact-card summary::-webkit-details-marker, details.svc-history summary::-webkit-details-marker { display: none; }
+  details.svc-group summary::after, details.contact-card summary::after, details.svc-history summary::after { content: "\25BE"; transition: transform .15s; }
+  details.svc-group[open] summary::after, details.contact-card[open] summary::after, details.svc-history[open] summary::after { transform: rotate(180deg); }
   details.contact-card {
     border: 1px solid #cdeae6;
     border-radius: 8px;
@@ -1058,14 +1067,20 @@
             <span class="label">Documents</span>
             <div class="docs">${docs || "<span>No documents uploaded.</span>"}</div>
           </div>
-          <section class="svc-history">
-            <h3>Service History</h3>
+          <details class="svc-history">
+            <summary>
+              <h3>Service History</h3>
+              <span class="svc-count">${(entry.services || []).length} ${(entry.services || []).length === 1 ? "service" : "services"}</span>
+            </summary>
             ${serviceGroupsHtml(entry)}
-          </section>
-          <section class="svc-history">
-            <h3>Phone Calls</h3>
+          </details>
+          <details class="svc-history">
+            <summary>
+              <h3>Phone Calls</h3>
+              <span class="svc-count">${(entry.calls || []).length} ${(entry.calls || []).length === 1 ? "call" : "calls"}</span>
+            </summary>
             ${callGroupsHtml(entry)}
-          </section>
+          </details>
         </div>
         <div class="card-actions">
           <button class="btn small teal" data-action="quickadd" data-id="${entry.id}">+ Service</button>
