@@ -1,0 +1,12 @@
+rules_version = '2';
+
+// Copy-paste these into Firebase Console -> Storage -> Rules -> Publish.
+// Only needed once Storage is enabled (DEPLOY.md step 6) so uploaded
+// documents sync across devices.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /households/home/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

@@ -212,6 +212,7 @@
   details.contact-card .contact { padding: 0 11px 11px; }
   .svc-count { font-size: .78rem; color: var(--muted); font-weight: 800; }
   .svc-item { border-top: 1px dashed #ffd9c8; padding: 9px 11px; }
+  .call-person { font-weight: 800; color: var(--plum); margin-bottom: 2px; }
   .svc-docs { margin-top: 6px; }
   .svc-note, .note { white-space: pre-wrap; overflow-wrap: anywhere; }
   .svc-editor-actions { display: flex; justify-content: flex-start; gap: 8px; margin-top: 10px; }
@@ -486,6 +487,28 @@
             <button class="btn small ghost" id="svcCancelEditBtn" type="button" hidden>Cancel edit</button>
           </div>
         </div>
+        <div class="full upload-box">
+          <span class="label">Phone calls</span>
+          <div class="attached" id="callList"></div>
+          <div class="svc-editor-grid">
+            <label>
+              Call date
+              <input id="callDate" type="date">
+            </label>
+            <label>
+              Who we spoke to
+              <input id="callPerson" placeholder="Name of the person on the call">
+            </label>
+            <label>
+              Note
+              <textarea id="callNote" placeholder="What was discussed, what they promised, follow-up needed..."></textarea>
+            </label>
+          </div>
+          <div class="svc-editor-actions">
+            <button class="btn small teal" id="callAddBtn" type="button">+ Add call</button>
+            <button class="btn small ghost" id="callCancelEditBtn" type="button" hidden>Cancel edit</button>
+          </div>
+        </div>
       </div>
       <div class="form-actions">
         <button class="btn ghost" id="cancelBtn" type="button">Cancel</button>
@@ -554,6 +577,34 @@
       <div class="form-actions">
         <button class="btn ghost" id="svcQuickCancel" type="button">Cancel</button>
         <button class="btn teal" id="svcQuickSave" type="submit">Save Service</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="callDialog">
+    <div class="modal-head">
+      <h2 id="callDialogTitle">Add Phone Call</h2>
+      <button class="close" id="callClose" type="button" aria-label="Close">&times;</button>
+    </div>
+    <form id="callQuickForm">
+      <input type="hidden" id="callEntryId">
+      <div class="svc-editor-grid">
+        <label>
+          Call date
+          <input id="callQuickDate" type="date">
+        </label>
+        <label>
+          Who we spoke to
+          <input id="callQuickPerson" placeholder="Name of the person on the call" required>
+        </label>
+        <label>
+          Note
+          <textarea id="callQuickNote" placeholder="What was discussed, what they promised, follow-up needed..."></textarea>
+        </label>
+      </div>
+      <div class="form-actions">
+        <button class="btn ghost" id="callQuickCancel" type="button">Cancel</button>
+        <button class="btn teal" id="callQuickSave" type="submit">Save Call</button>
       </div>
     </form>
   </dialog>
@@ -723,12 +774,12 @@
     return dates[dates.length - 1] || "";
   }
 
-  function servicesByDate(entry) {
+  function groupByDate(list) {
     const groups = new Map();
-    (entry.services || []).forEach(svc => {
-      const key = svc.date || "";
+    (list || []).forEach(item => {
+      const key = item.date || "";
       if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(svc);
+      groups.get(key).push(item);
     });
     return [...groups.entries()]
       .sort((a, b) => {
@@ -737,6 +788,14 @@
         return a[0] < b[0] ? 1 : -1;
       })
       .map(([date, items]) => ({ date, items }));
+  }
+
+  function servicesByDate(entry) {
+    return groupByDate(entry.services);
+  }
+
+  function callsByDate(entry) {
+    return groupByDate(entry.calls);
   }
 
   async function migrateLegacyDocs(list) {
@@ -776,6 +835,20 @@
 
   function updateSyncStatus(message) {
     syncStatus.textContent = message;
+  }
+
+  function firebaseErrorMessage(err, fallback) {
+    const code = String((err && (err.code || err.message)) || "").toLowerCase();
+    if (code.includes("permission-denied") || code.includes("insufficient permissions")) {
+      return "Firebase is blocking this page - publish the Firestore rules (DEPLOY.md step 5)";
+    }
+    if (code.includes("auth/")) {
+      return "Firebase sign-in failed - enable Anonymous auth (DEPLOY.md step 3)";
+    }
+    if (code.includes("not-found") || code.includes("does not exist")) {
+      return "Firestore database not found - create it (DEPLOY.md step 4)";
+    }
+    return fallback;
   }
 
   /* ---------- Helpers ---------- */
@@ -821,6 +894,7 @@
       entry.category, entry.vendor, entry.nextDate,
       entry.contactName, entry.phone, entry.email, entry.website, entry.address,
       ...(entry.services || []).flatMap(svc => [svc.date, svc.note, ...(svc.documents || []).map(doc => doc.name)]),
+      ...(entry.calls || []).flatMap(call => [call.date, call.person, call.note]),
       ...(entry.documents || []).map(doc => doc.name)
     ].join(" ").toLowerCase();
   }
@@ -925,6 +999,24 @@
     `).join("");
   }
 
+  function callGroupsHtml(entry) {
+    const groups = callsByDate(entry);
+    if (!groups.length) return "<span>No calls logged yet. Tap + Call to add one.</span>";
+    return groups.map((group, index) => `
+      <details class="svc-group" ${index === 0 ? "open" : ""}>
+        <summary>
+          <span>${group.date ? formatDate(group.date) : "No date yet"}</span>
+          <span class="svc-count">${group.items.length} ${group.items.length === 1 ? "call" : "calls"}</span>
+        </summary>
+        ${group.items.map(call => `
+          <div class="svc-item">
+            ${call.person ? `<div class="call-person">Spoke with ${escapeHtml(call.person)}</div>` : ""}
+            <div class="svc-note">${escapeHtml(call.note || "No note")}</div>
+          </div>`).join("")}
+      </details>
+    `).join("");
+  }
+
   function renderCards() {
     renderCategoryOptions();
     const list = filteredEntries();
@@ -970,9 +1062,14 @@
             <h3>Service History</h3>
             ${serviceGroupsHtml(entry)}
           </section>
+          <section class="svc-history">
+            <h3>Phone Calls</h3>
+            ${callGroupsHtml(entry)}
+          </section>
         </div>
         <div class="card-actions">
           <button class="btn small teal" data-action="quickadd" data-id="${entry.id}">+ Service</button>
+          <button class="btn small teal" data-action="quickcall" data-id="${entry.id}">+ Call</button>
           <button class="btn small ghost" data-action="edit" data-id="${entry.id}">Edit</button>
           <button class="btn small danger" data-action="delete" data-id="${entry.id}">Delete</button>
         </div>
@@ -986,9 +1083,12 @@
     form.reset();
     draftDocs = entry ? structuredClone(entry.documents || []) : [];
     draftServices = entry ? structuredClone(entry.services || []) : [];
+    draftCalls = entry ? structuredClone(entry.calls || []) : [];
     svcEditId = null;
     resetServiceInputs();
     renderServiceList();
+    resetCallInputs();
+    renderCallList();
     document.getElementById("dialogTitle").textContent = entry ? "Edit Household Page" : "Add Household Page";
     document.getElementById("entryId").value = entry?.id || "";
     document.getElementById("category").value = entry?.category || "Other";
@@ -1107,6 +1207,91 @@
 
   svcCancelEditBtn.addEventListener("click", resetServiceInputs);
 
+  /* ---------- Phone call editor ---------- */
+  let draftCalls = [];
+  let callEditId = null;
+  const callList = document.getElementById("callList");
+  const callDate = document.getElementById("callDate");
+  const callPerson = document.getElementById("callPerson");
+  const callNote = document.getElementById("callNote");
+  const callAddBtn = document.getElementById("callAddBtn");
+  const callCancelEditBtn = document.getElementById("callCancelEditBtn");
+
+  function sortedDraftCalls() {
+    return [...draftCalls].sort((a, b) => {
+      if (!a.date) return 1;
+      if (!b.date) return -1;
+      return a.date < b.date ? 1 : -1;
+    });
+  }
+
+  function resetCallInputs() {
+    callDate.value = "";
+    callPerson.value = "";
+    callNote.value = "";
+    callEditId = null;
+    callAddBtn.textContent = "+ Add call";
+    callCancelEditBtn.hidden = true;
+  }
+
+  function renderCallList() {
+    callList.innerHTML = "";
+    if (!draftCalls.length) {
+      callList.innerHTML = '<p class="help">No calls yet. Add the first one below.</p>';
+      return;
+    }
+    sortedDraftCalls().forEach(call => {
+      const preview = (call.note || "").split("\n")[0].slice(0, 60);
+      const row = document.createElement("div");
+      row.className = "attached-row";
+      row.innerHTML = `
+        <span>${call.date ? formatDate(call.date) : "No date"} &middot; ${call.person ? escapeHtml(call.person) : "No name"}${preview ? ` &middot; ${escapeHtml(preview)}` : ""}</span>
+        <span style="display:flex; gap:6px; flex:none;">
+          <button class="btn small ghost" type="button" data-edit-call="${call.id}">Edit</button>
+          <button class="btn small ghost" type="button" data-remove-call="${call.id}">Remove</button>
+        </span>`;
+      callList.appendChild(row);
+    });
+  }
+
+  callAddBtn.addEventListener("click", () => {
+    const person = callPerson.value.trim();
+    const note = callNote.value.trim();
+    const date = callDate.value;
+    if (!person && !note && !date) return;
+    if (callEditId) {
+      draftCalls = draftCalls.map(call => call.id === callEditId ? { ...call, date, person, note } : call);
+    } else {
+      draftCalls.push({ id: uid(), date, person, note });
+    }
+    resetCallInputs();
+    renderCallList();
+  });
+
+  callCancelEditBtn.addEventListener("click", resetCallInputs);
+
+  callList.addEventListener("click", event => {
+    const editBtn = event.target.closest("[data-edit-call]");
+    if (editBtn) {
+      const call = draftCalls.find(item => item.id === editBtn.dataset.editCall);
+      if (!call) return;
+      callEditId = call.id;
+      callDate.value = call.date || "";
+      callPerson.value = call.person || "";
+      callNote.value = call.note || "";
+      callAddBtn.textContent = "Update call";
+      callCancelEditBtn.hidden = false;
+      callPerson.focus();
+      return;
+    }
+    const removeBtn = event.target.closest("[data-remove-call]");
+    if (removeBtn) {
+      draftCalls = draftCalls.filter(item => item.id !== removeBtn.dataset.removeCall);
+      if (callEditId === removeBtn.dataset.removeCall) resetCallInputs();
+      renderCallList();
+    }
+  });
+
   serviceList.addEventListener("click", event => {
     const editBtn = event.target.closest("[data-edit-svc]");
     if (editBtn) {
@@ -1189,6 +1374,45 @@
       svcQuickSave.disabled = false;
       svcQuickSave.textContent = "Save Service";
     }
+  });
+
+  /* ---------- Quick-add phone call from a card ---------- */
+  const callDialog = document.getElementById("callDialog");
+  const callQuickForm = document.getElementById("callQuickForm");
+  const callDialogTitle = document.getElementById("callDialogTitle");
+  const callEntryId = document.getElementById("callEntryId");
+  const callQuickDate = document.getElementById("callQuickDate");
+  const callQuickPerson = document.getElementById("callQuickPerson");
+  const callQuickNote = document.getElementById("callQuickNote");
+  const callQuickCancel = document.getElementById("callQuickCancel");
+  const callClose = document.getElementById("callClose");
+
+  function openQuickCall(entry) {
+    callQuickForm.reset();
+    callEntryId.value = entry.id;
+    callDialogTitle.textContent = `Add Phone Call - ${entry.category || "Other"}`;
+    callQuickDate.value = new Date().toISOString().slice(0, 10);
+    callDialog.showModal();
+    callQuickPerson.focus();
+  }
+
+  callQuickCancel.addEventListener("click", () => callDialog.close());
+  callClose.addEventListener("click", () => callDialog.close());
+
+  callQuickForm.addEventListener("submit", event => {
+    event.preventDefault();
+    const entry = entries.find(item => item.id === callEntryId.value);
+    if (!entry) { callDialog.close(); return; }
+    entry.calls = [...(entry.calls || []), {
+      id: uid(),
+      date: callQuickDate.value,
+      person: callQuickPerson.value.trim(),
+      note: callQuickNote.value.trim()
+    }];
+    entry.updatedAt = new Date().toISOString();
+    saveEntries();
+    callDialog.close();
+    renderCards();
   });
 
   function readFileAsDataUrl(file) {
@@ -1306,8 +1530,9 @@
         note: CLOUD_DOC_NOTE
       }, { merge: true });
       updateSyncStatus("Synced with Firebase");
-    } catch {
-      updateSyncStatus("Saved here; Firebase sync failed");
+    } catch (err) {
+      console.error("Firebase save failed:", err);
+      updateSyncStatus(firebaseErrorMessage(err, "Saved here; Firebase sync failed"));
     }
   }
 
@@ -1383,9 +1608,10 @@
         updateSyncStatus("Updated from Firebase");
       });
       updateSyncStatus("Synced with Firebase");
-    } catch {
+    } catch (err) {
       firebaseSync.ready = false;
-      updateSyncStatus("Firebase not connected - saved on this device");
+      console.error("Firebase connection failed:", err);
+      updateSyncStatus(firebaseErrorMessage(err, "Firebase not connected - saved on this device"));
     }
   }
 
@@ -1609,6 +1835,7 @@
     if (!button) return;
     const entry = entries.find(item => item.id === button.dataset.id);
     if (button.dataset.action === "quickadd" && entry) openQuickService(entry);
+    if (button.dataset.action === "quickcall" && entry) openQuickCall(entry);
     if (button.dataset.action === "edit" && entry) openEditor(entry);
     if (button.dataset.action === "delete" && entry) {
       const proceed = await confirmAction(`Delete this ${entry.category || "household"} page? This removes it on every synced device.`);
@@ -1656,6 +1883,7 @@
         vendor: document.getElementById("vendor").value.trim(),
         nextDate: document.getElementById("nextDate").value,
         services,
+        calls: structuredClone(draftCalls),
         contactName: document.getElementById("contactName").value.trim(),
         phone: document.getElementById("phone").value.trim(),
         email: document.getElementById("email").value.trim(),
