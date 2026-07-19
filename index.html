@@ -5,14 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Household Information Hub</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,650;6..12,800&display=swap');
-
   :root {
     --plum: #584053;
     --teal: #8dc6bf;
     --gold: #fcbc66;
     --coral: #f97b4f;
     --paper: #fbf8f5;
+    --paper-2: #f3eeef;
     --card: #ffffff;
     --ink: #342c33;
     --muted: #776973;
@@ -20,35 +19,40 @@
     --teal-soft: #edf8f6;
     --gold-soft: #fff5df;
     --coral-soft: #fff0ea;
-    --shadow: 0 10px 28px rgba(88, 64, 83, 0.10);
+    --shadow: 0 16px 42px rgba(88, 64, 83, 0.12);
+    --shadow-soft: 0 8px 18px rgba(88, 64, 83, 0.08);
   }
 
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background: var(--paper);
+    background:
+      radial-gradient(circle at top left, rgba(141,198,191,.45), transparent 34rem),
+      linear-gradient(180deg, var(--paper), var(--paper-2));
     color: var(--ink);
-    font-family: "Nunito Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     line-height: 1.45;
   }
-  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; }
   button, input, textarea, select { font: inherit; }
   button { cursor: pointer; }
-  .shell { width: min(1120px, calc(100% - 24px)); margin: 0 auto; padding: 18px 0 32px; }
+  .shell { width: min(1240px, calc(100% - 24px)); margin: 0 auto; padding: 18px 0 42px; }
 
   header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
-    background: var(--plum);
+    gap: 18px;
+    background:
+      linear-gradient(135deg, rgba(88,64,83,.98), rgba(88,64,83,.92)),
+      var(--plum);
     color: #fff;
     border-radius: 8px;
-    padding: 18px;
+    padding: clamp(18px, 3vw, 30px);
     box-shadow: var(--shadow);
+    min-height: 168px;
   }
-  h1 { margin: 0; font-size: clamp(1.25rem, 2vw, 1.8rem); }
-  .subtitle { margin: 4px 0 0; color: rgba(255,255,255,.75); }
+  h1 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.8rem); line-height: 1.05; }
+  .subtitle { max-width: 680px; margin: 9px 0 0; color: rgba(255,255,255,.78); font-size: 1rem; }
   .status {
     display: inline-flex;
     width: fit-content;
@@ -58,7 +62,7 @@
     color: rgba(255,255,255,.86);
     padding: 5px 9px;
     font-size: .82rem;
-    font-weight: 800;
+    font-weight: 750;
   }
 
   .btn {
@@ -67,10 +71,11 @@
     padding: 10px 13px;
     background: var(--plum);
     color: #fff;
-    font-weight: 800;
+    font-weight: 750;
+    text-decoration: none;
+    transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
   }
-  .btn:hover { filter: brightness(.98); transform: translateY(-1px); }
-  .btn:disabled { opacity: .6; cursor: wait; transform: none; }
+  .btn:hover { filter: brightness(.98); transform: translateY(-1px); box-shadow: var(--shadow-soft); }
   .btn.light { background: #fff; color: var(--plum); }
   .btn.ghost { background: transparent; color: var(--plum); border-color: var(--line); }
   .btn.teal { background: #2f8f87; }
@@ -80,14 +85,14 @@
   .toolbar {
     display: grid;
     grid-template-columns: minmax(180px, 1fr) auto auto;
-    gap: 10px;
-    margin: 16px 0 8px;
-  }
-  .utility-row {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin: 0 0 16px;
+    gap: 12px;
+    margin: 18px 0;
+    padding: 12px;
+    border: 1px solid rgba(234,223,229,.9);
+    border-radius: 8px;
+    background: rgba(255,255,255,.82);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(10px);
   }
   input, textarea, select {
     width: 100%;
@@ -95,7 +100,7 @@
     border-radius: 8px;
     background: #fff;
     color: var(--ink);
-    padding: 10px;
+    padding: 12px;
   }
   input:focus, textarea:focus, select:focus {
     outline: none;
@@ -106,13 +111,13 @@
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
   }
   .card {
     display: flex;
     flex-direction: column;
-    min-height: 280px;
+    min-height: 380px;
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 8px;
@@ -120,116 +125,115 @@
     box-shadow: var(--shadow);
   }
   .card-head {
-    padding: 14px;
+    padding: 18px;
     border-bottom: 1px solid var(--line);
-    background: linear-gradient(90deg, var(--teal-soft), #fff);
+    background:
+      linear-gradient(135deg, rgba(141,198,191,.35), rgba(255,245,223,.62)),
+      #fff;
   }
   .category {
     display: inline-flex;
     width: fit-content;
     max-width: 100%;
-    margin-bottom: 8px;
-    padding: 4px 8px;
+    margin-bottom: 10px;
+    padding: 5px 9px;
     border-radius: 999px;
     border: 1px solid #ffe3aa;
     background: var(--gold-soft);
     color: var(--plum);
     font-size: .76rem;
-    font-weight: 800;
+    font-weight: 850;
   }
-  .card h2 { margin: 0; color: var(--plum); font-size: 1.16rem; overflow-wrap: anywhere; }
-  .vendor { margin: 4px 0 0; color: var(--muted); font-weight: 650; overflow-wrap: anywhere; }
-  .due-badge {
-    display: inline-flex;
-    width: fit-content;
-    max-width: 100%;
-    margin-top: 8px;
-    border-radius: 999px;
-    padding: 4px 9px;
-    font-size: .78rem;
-    font-weight: 800;
-  }
-  .due-badge.overdue { background: var(--coral); color: #fff; }
-  .due-badge.soon { background: var(--gold); color: #6b4a12; }
-  .due-badge.ok { background: var(--teal-soft); color: #237b73; border: 1px solid #cdeae6; }
-  .card-body { display: grid; gap: 12px; padding: 14px; flex: 1; }
+  .card h2 { margin: 0; color: var(--plum); font-size: 1.45rem; overflow-wrap: anywhere; }
+  .vendor { margin: 6px 0 0; color: var(--muted); font-weight: 700; overflow-wrap: anywhere; }
+  .card-body { display: grid; gap: 14px; padding: 18px; flex: 1; }
   .label {
     display: block;
     margin-bottom: 4px;
     color: var(--muted);
     font-size: .75rem;
-    font-weight: 800;
+    font-weight: 850;
     letter-spacing: .05em;
     text-transform: uppercase;
   }
-  .svc-history {
+  .last-service {
     display: grid;
-    gap: 8px;
+    gap: 10px;
     border: 1px solid #ffd9c8;
     border-left: 5px solid var(--coral);
     border-radius: 8px;
     background: var(--coral-soft);
-    padding: 12px;
+    padding: 14px;
   }
-  .svc-history h3 { margin: 0; color: var(--plum); font-size: 1rem; }
-  details.svc-history summary {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    cursor: pointer;
-  }
-  details.svc-history summary .svc-count { margin-left: auto; }
-  details.svc-group {
-    border: 1px solid #ffd9c8;
+  .last-service h3 { margin: 0; color: var(--plum); font-size: 1rem; }
+  .date-pill {
+    display: inline-flex;
+    width: fit-content;
     border-radius: 8px;
     background: #fff;
-    overflow: hidden;
-  }
-  details.svc-group summary {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 9px 11px;
-    cursor: pointer;
     color: #8f3c28;
-    font-weight: 800;
+    padding: 5px 8px;
+    font-weight: 850;
   }
-  details.svc-group summary::-webkit-details-marker, details.contact-card summary::-webkit-details-marker, details.svc-history summary::-webkit-details-marker { display: none; }
-  details.svc-group summary::after, details.contact-card summary::after, details.svc-history summary::after { content: "\25BE"; transition: transform .15s; }
-  details.svc-group[open] summary::after, details.contact-card[open] summary::after, details.svc-history[open] summary::after { transform: rotate(180deg); }
-  details.contact-card {
-    border: 1px solid #cdeae6;
+  .service-history {
+    display: grid;
+    gap: 10px;
+    border: 1px solid var(--line);
     border-radius: 8px;
-    background: var(--teal-soft);
-    overflow: hidden;
+    background: #fff;
+    padding: 12px;
   }
-  details.contact-card summary {
-    list-style: none;
+  .section-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    padding: 9px 11px;
-    cursor: pointer;
-    color: #237b73;
-    font-weight: 800;
+    gap: 10px;
   }
-  details.contact-card .contact { padding: 0 11px 11px; }
-  .svc-count { font-size: .78rem; color: var(--muted); font-weight: 800; }
-  .svc-item { border-top: 1px dashed #ffd9c8; padding: 9px 11px; }
-  .call-person { font-weight: 800; color: var(--plum); margin-bottom: 2px; }
-  .svc-docs { margin-top: 6px; }
-  .svc-note, .note { white-space: pre-wrap; overflow-wrap: anywhere; }
-  .svc-editor-actions { display: flex; justify-content: flex-start; gap: 8px; margin-top: 10px; }
-  .svc-editor-grid { display: grid; gap: 10px; margin-top: 10px; }
-  .svc-editor-grid textarea { min-height: 70px; }
-  .contact { display: grid; gap: 5px; overflow-wrap: anywhere; }
+  .section-head h3 { margin: 0; color: var(--plum); font-size: 1rem; }
+  .history-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .history-chip {
+    border: 1px solid #cfe7e4;
+    border-radius: 999px;
+    background: var(--teal-soft);
+    color: var(--plum);
+    padding: 7px 10px;
+    font-weight: 850;
+    font-size: .86rem;
+  }
+  .history-chip:hover { transform: translateY(-1px); box-shadow: var(--shadow-soft); }
+  .service-detail {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+  }
+  .service-detail .date-pill { background: var(--coral-soft); }
+  .note { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .contact { display: grid; gap: 7px; overflow-wrap: anywhere; }
+  .contact.centered { justify-items: center; text-align: center; }
   .contact a { color: #237b73; font-weight: 750; text-decoration: none; }
-  .docs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .contact-actions {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 180px));
+    gap: 8px;
+    margin-top: 8px;
+    justify-content: center;
+    width: 100%;
+  }
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--plum);
+    font-weight: 850;
+    text-decoration: none;
+  }
+  .contact-link.primary { background: #2f8f87; color: #fff; border-color: #2f8f87; }
+  .contact-link:hover { transform: translateY(-1px); box-shadow: var(--shadow-soft); }
+  .docs { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; text-align: center; }
   .doc {
     max-width: 100%;
     overflow: hidden;
@@ -244,13 +248,13 @@
     font-weight: 750;
     text-decoration: none;
   }
-  button.doc { text-align: left; }
   .card-actions {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    padding: 12px 14px;
+    padding: 14px 18px;
     border-top: 1px solid var(--line);
+    background: rgba(255,255,255,.72);
   }
   .empty {
     grid-column: 1 / -1;
@@ -262,6 +266,173 @@
     text-align: center;
   }
   .empty strong { display: block; color: var(--plum); font-size: 1.2rem; margin-bottom: 4px; }
+  .hub-section {
+    margin-top: 22px;
+    display: grid;
+    gap: 14px;
+  }
+  .section-title {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .section-title h2 { margin: 0; color: var(--plum); font-size: clamp(1.25rem, 2vw, 1.8rem); }
+  .section-title p { margin: 4px 0 0; color: var(--muted); }
+  .panel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .record-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow-soft);
+    padding: 16px;
+    display: grid;
+    gap: 12px;
+  }
+  .record-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .record-top h3 { margin: 0; color: var(--plum); font-size: 1.18rem; overflow-wrap: anywhere; }
+  .record-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .meta-box {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--teal-soft);
+    padding: 10px;
+  }
+  .meta-box strong { display: block; color: var(--plum); overflow-wrap: anywhere; }
+  .task-due {
+    display: inline-flex;
+    width: fit-content;
+    border-radius: 999px;
+    padding: 6px 10px;
+    background: var(--gold-soft);
+    color: var(--plum);
+    font-weight: 850;
+  }
+  .task-due.overdue { background: var(--coral-soft); color: #8f3c28; }
+  .task-due.soon { background: var(--gold); color: var(--plum); }
+  .record-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+  .calendar-shell {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .calendar-toolbar {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) auto auto auto;
+    gap: 10px;
+    padding: 14px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255,255,255,.78);
+  }
+  .menu-wrap { position: relative; }
+  .menu-btn {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--plum);
+    font-size: 1.25rem;
+    font-weight: 900;
+  }
+  .task-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    width: min(360px, calc(100vw - 40px));
+    max-height: 420px;
+    overflow: auto;
+    z-index: 4;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: var(--shadow);
+    padding: 8px;
+  }
+  .task-menu.open { display: grid; gap: 6px; }
+  .task-menu button {
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: var(--teal-soft);
+    color: var(--ink);
+    text-align: left;
+    padding: 10px;
+  }
+  .task-menu button strong { display: block; color: var(--plum); }
+  .task-menu button span { color: var(--muted); font-size: .86rem; }
+  .calendar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .calendar-head h3 { margin: 0; color: var(--plum); font-size: 1.2rem; }
+  .calendar-nav { display: flex; gap: 8px; }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+  .weekday {
+    background: var(--plum);
+    color: #fff;
+    font-size: .76rem;
+    font-weight: 850;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: 9px;
+    text-align: center;
+  }
+  .calendar-day {
+    min-height: 132px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 8px;
+    background: #fff;
+  }
+  .calendar-day.muted { background: #f7f2f4; color: var(--muted); }
+  .day-number { font-weight: 900; color: var(--plum); margin-bottom: 7px; }
+  .calendar-event {
+    display: grid;
+    gap: 5px;
+    width: 100%;
+    border: 1px solid #cfe7e4;
+    border-left: 4px solid var(--teal);
+    border-radius: 8px;
+    background: var(--teal-soft);
+    color: var(--ink);
+    padding: 7px;
+    margin-bottom: 6px;
+    text-align: left;
+  }
+  .calendar-event.warranty { border-left-color: var(--coral); background: var(--coral-soft); }
+  .calendar-event.install { border-left-color: var(--gold); background: var(--gold-soft); }
+  .calendar-event.service { border-left-color: var(--plum); background: #f1eaf0; }
+  .calendar-event.vehicle { border-left-color: #2f8f87; background: var(--teal-soft); }
+  .calendar-event strong { color: var(--plum); font-size: .84rem; }
+  .calendar-event span { color: var(--muted); font-size: .75rem; }
+  .event-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .event-actions button { padding: 5px 7px; font-size: .74rem; }
 
   dialog {
     width: min(760px, calc(100vw - 24px));
@@ -319,65 +490,23 @@
   .attached-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 
-  #confirmDialog { width: min(420px, calc(100vw - 24px)); }
-  #confirmDialog .modal-body { padding: 16px; }
-  #confirmDialog .modal-body p { margin: 0; }
-  #confirmDialog .form-actions { padding: 0 16px 16px; margin-top: 0; }
-
-  #pinDialog { width: min(420px, calc(100vw - 24px)); }
-  #pinDialog form { display: grid; gap: 12px; }
-  .pin-error { color: #b84a31; font-weight: 800; font-size: .88rem; margin: 0; min-height: 1.2em; }
-
-  .lock-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: var(--plum);
-    padding: 20px;
-  }
-  .lock-overlay.active { display: flex; }
-  .lock-card {
-    width: min(380px, 100%);
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 24px 70px rgba(0,0,0,.35);
-    padding: 24px;
-    display: grid;
-    gap: 12px;
-    text-align: center;
-  }
-  .lock-card h2 { margin: 0; color: var(--plum); }
-  .lock-card p { margin: 0; color: var(--muted); font-size: .92rem; }
-  .lock-card input { text-align: center; letter-spacing: .25em; font-weight: 800; }
-
   @media (max-width: 900px) {
-    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid, .panel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 680px) {
     header { align-items: stretch; flex-direction: column; }
     header .btn { width: 100%; }
-    .toolbar, .grid, .form-grid { grid-template-columns: 1fr; }
-    .utility-row { flex-wrap: wrap; }
-    .utility-row .btn { flex: 1; }
+    .toolbar, .grid, .form-grid, .panel-grid, .record-meta, .calendar-toolbar { grid-template-columns: 1fr; }
+    .section-title, .record-top { align-items: stretch; flex-direction: column; }
     .card-actions, .form-actions { justify-content: stretch; flex-wrap: wrap; }
-    .card-actions .btn, .form-actions .btn { flex: 1; }
+    .card-actions .btn, .form-actions .btn, .record-actions .btn { flex: 1; }
+    .calendar-grid { grid-template-columns: 1fr; }
+    .weekday { display: none; }
+    .calendar-day { min-height: auto; }
   }
 </style>
 </head>
 <body>
-  <div class="lock-overlay" id="lockOverlay" aria-hidden="true">
-    <div class="lock-card">
-      <h2>Household Hub locked</h2>
-      <p>Enter your PIN to open shared household details.</p>
-      <input id="lockPinInput" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN" aria-label="PIN">
-      <p class="pin-error" id="lockError"></p>
-      <button class="btn teal" id="unlockBtn" type="button">Unlock</button>
-    </div>
-  </div>
-
   <main class="shell">
     <header>
       <div>
@@ -385,41 +514,76 @@
         <p class="subtitle">Service notes, vendor contacts, and household documents in one clean view.</p>
         <span class="status" id="syncStatus">Saved on this device</span>
       </div>
-      <button class="btn light" id="addBtn">+ Add Page</button>
     </header>
 
-    <section class="toolbar" aria-label="Search and filter">
-      <input id="searchInput" type="search" placeholder="Search title, vendor, notes, contacts, documents...">
-      <select id="categoryFilter" aria-label="Filter by category">
-        <option value="all">All categories</option>
-      </select>
-      <select id="sortSelect" aria-label="Sort pages">
-        <option value="recent">Newest service first</option>
-        <option value="oldest">Oldest service first</option>
-        <option value="due">Next due soonest</option>
-        <option value="category">Category A-Z</option>
-        <option value="vendor">Vendor A-Z</option>
-      </select>
+    <section class="hub-section" aria-label="Home maintenance calendar">
+      <div class="section-title">
+        <div>
+          <h2>Household Calendar</h2>
+          <p>Services, maintenance, vehicle renewals, appliance installs, and warranty dates in one view.</p>
+        </div>
+      </div>
+      <div class="calendar-shell">
+        <div class="calendar-toolbar">
+          <input id="searchInput" type="search" placeholder="Search services, maintenance, vehicles, notes, documents...">
+          <select id="categoryFilter" aria-label="Filter by category">
+            <option value="all">All categories</option>
+            <option value="services">Services</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="vehicles">Vehicles</option>
+          </select>
+          <button class="btn teal" id="addTaskBtn">+ Add</button>
+          <div class="menu-wrap">
+            <button class="menu-btn" id="taskMenuBtn" type="button" aria-label="Open task list">☰</button>
+            <div class="task-menu" id="taskDropdown"></div>
+          </div>
+        </div>
+        <div class="calendar-head">
+          <h3 id="calendarMonthLabel">Calendar</h3>
+          <div class="calendar-nav">
+            <button class="btn small ghost" id="prevMonthBtn" type="button">Previous</button>
+            <button class="btn small ghost" id="nextMonthBtn" type="button">Next</button>
+          </div>
+        </div>
+        <div class="calendar-grid" id="maintenanceCalendar"></div>
+      </div>
     </section>
 
-    <section class="utility-row" aria-label="Backup and security">
-      <button class="btn small ghost" id="exportBtn" type="button">Export backup</button>
-      <button class="btn small ghost" id="importBtn" type="button">Import backup</button>
-      <button class="btn small ghost" id="pinBtn" type="button">PIN</button>
-      <input id="importFile" type="file" accept="application/json" hidden>
+    <section class="hub-section" id="servicesSection" aria-label="Services">
+      <div class="section-title">
+        <div>
+          <h2>Services</h2>
+          <p>Vendor contact details, service history, and documents.</p>
+        </div>
+        <button class="btn teal" id="addBtn">+ Add Service</button>
+      </div>
+      <section class="grid" id="cards" aria-live="polite"></section>
     </section>
 
-    <section class="grid" id="cards" aria-live="polite"></section>
+    <section class="hub-section" id="vehiclesSection" aria-label="Vehicle records">
+      <div class="section-title">
+        <div>
+          <h2>Vehicle Records</h2>
+          <p>Plate, VIN, insurance, registration, oil changes, tires, and inspection notes.</p>
+        </div>
+        <button class="btn teal" id="addVehicleBtn">+ Add Vehicle</button>
+      </div>
+      <div class="panel-grid" id="vehicleList"></div>
+    </section>
   </main>
 
   <dialog id="entryDialog">
     <div class="modal-head">
-      <h2 id="dialogTitle">Add Household Page</h2>
-      <button class="close" id="closeDialog" type="button" aria-label="Close">&times;</button>
+      <h2 id="dialogTitle">Add Service</h2>
+      <button class="close" id="closeDialog" type="button" aria-label="Close">x</button>
     </div>
     <form id="entryForm">
       <input type="hidden" id="entryId">
       <div class="form-grid">
+        <label>
+          Title
+          <input id="title" required placeholder="HVAC, Roof, Water Heater, Pest Control">
+        </label>
         <label>
           Category
           <select id="category">
@@ -442,8 +606,12 @@
           <input id="vendor" placeholder="Company or person">
         </label>
         <label>
-          Next service due
-          <input id="nextDate" type="date">
+          Date of last service
+          <input id="lastDate" type="date">
+        </label>
+        <label class="full">
+          Note for what last services were performed
+          <textarea id="note" placeholder="What was done, parts replaced, next recommended service, cost, warranty notes..."></textarea>
         </label>
         <label>
           Contact name
@@ -459,9 +627,9 @@
         </label>
         <label>
           Website
-          <input id="website" placeholder="example.com">
+          <input id="website" type="url" placeholder="https://example.com">
         </label>
-        <label>
+        <label class="full">
           Address or account info
           <input id="address" placeholder="Address, account number, policy number, or useful reference">
         </label>
@@ -470,150 +638,167 @@
             Upload documents
             <input id="documents" type="file" multiple>
           </label>
-          <p class="help" id="docsHelp">Documents are saved in this browser with the page.</p>
+          <p class="help">With Firebase Storage enabled, documents are saved to Firebase and stay downloadable.</p>
           <div class="attached" id="attachedDocs"></div>
-        </div>
-        <div class="full upload-box">
-          <span class="label">Service history</span>
-          <div class="attached" id="serviceList"></div>
-          <div class="svc-editor-grid">
-            <label>
-              Service date
-              <input id="svcDate" type="date">
-            </label>
-            <label>
-              What was done
-              <textarea id="svcNote" placeholder="What was done, parts replaced, cost, warranty notes..."></textarea>
-            </label>
-            <label>
-              Attach documents to this service
-              <input id="svcDocs" type="file" multiple>
-            </label>
-          </div>
-          <div class="attached" id="svcDocList"></div>
-          <div class="svc-editor-actions">
-            <button class="btn small teal" id="svcAddBtn" type="button">+ Add service</button>
-            <button class="btn small ghost" id="svcCancelEditBtn" type="button" hidden>Cancel edit</button>
-          </div>
-        </div>
-        <div class="full upload-box">
-          <span class="label">Phone calls</span>
-          <div class="attached" id="callList"></div>
-          <div class="svc-editor-grid">
-            <label>
-              Call date
-              <input id="callDate" type="date">
-            </label>
-            <label>
-              Who we spoke to
-              <input id="callPerson" placeholder="Name of the person on the call">
-            </label>
-            <label>
-              Note
-              <textarea id="callNote" placeholder="What was discussed, what they promised, follow-up needed..."></textarea>
-            </label>
-          </div>
-          <div class="svc-editor-actions">
-            <button class="btn small teal" id="callAddBtn" type="button">+ Add call</button>
-            <button class="btn small ghost" id="callCancelEditBtn" type="button" hidden>Cancel edit</button>
-          </div>
         </div>
       </div>
       <div class="form-actions">
         <button class="btn ghost" id="cancelBtn" type="button">Cancel</button>
-        <button class="btn teal" id="saveBtn" type="submit">Save Page</button>
+        <button class="btn teal" type="submit">Save Page</button>
       </div>
     </form>
   </dialog>
 
-  <dialog id="confirmDialog">
+  <dialog id="serviceDialog">
     <div class="modal-head">
-      <h2 id="confirmTitle">Please confirm</h2>
-      <button class="close" id="confirmClose" type="button" aria-label="Close">&times;</button>
+      <h2 id="serviceDialogTitle">Add Service</h2>
+      <button class="close" id="closeServiceDialog" type="button" aria-label="Close">x</button>
     </div>
-    <div class="modal-body"><p id="confirmMessage"></p></div>
-    <div class="form-actions">
-      <button class="btn ghost" id="confirmCancel" type="button">Cancel</button>
-      <button class="btn danger" id="confirmOk" type="button">Delete</button>
-    </div>
-  </dialog>
-
-  <dialog id="pinDialog">
-    <div class="modal-head">
-      <h2 id="pinDialogTitle">Set a PIN</h2>
-      <button class="close" id="pinClose" type="button" aria-label="Close">&times;</button>
-    </div>
-    <form id="pinForm">
-      <label id="currentPinLabel" hidden>
-        Current PIN
-        <input id="currentPin" type="password" inputmode="numeric" autocomplete="off">
-      </label>
-      <label>
-        <span id="newPinLabel">New PIN (4+ digits)</span>
-        <input id="newPin" type="password" inputmode="numeric" autocomplete="off">
-      </label>
-      <p class="help" id="pinHelp">The PIN locks this page on every device it syncs to. Leave the new PIN blank to remove the lock.</p>
-      <p class="pin-error" id="pinError"></p>
-      <div class="form-actions">
-        <button class="btn ghost" id="pinCancel" type="button">Cancel</button>
-        <button class="btn teal" type="submit">Save PIN</button>
-      </div>
-    </form>
-  </dialog>
-
-  <dialog id="svcDialog">
-    <div class="modal-head">
-      <h2 id="svcDialogTitle">Add Service</h2>
-      <button class="close" id="svcClose" type="button" aria-label="Close">&times;</button>
-    </div>
-    <form id="svcQuickForm">
-      <input type="hidden" id="svcEntryId">
-      <div class="svc-editor-grid">
+    <form id="serviceForm">
+      <input type="hidden" id="serviceEntryId">
+      <div class="form-grid">
         <label>
           Service date
-          <input id="svcQuickDate" type="date">
+          <input id="serviceDate" type="date" required>
         </label>
-        <label>
-          What was done
-          <textarea id="svcQuickNote" placeholder="What was done, parts replaced, cost, warranty notes..." required></textarea>
-        </label>
-        <label>
-          Attach documents to this service
-          <input id="svcQuickDocs" type="file" multiple>
+        <label class="full">
+          Services performed
+          <textarea id="serviceNote" required placeholder="What was done, parts replaced, cost, warranty details, and next recommendation..."></textarea>
         </label>
       </div>
-      <div class="attached" id="svcQuickDocList"></div>
       <div class="form-actions">
-        <button class="btn ghost" id="svcQuickCancel" type="button">Cancel</button>
-        <button class="btn teal" id="svcQuickSave" type="submit">Save Service</button>
+        <button class="btn ghost" id="cancelServiceBtn" type="button">Cancel</button>
+        <button class="btn teal" type="submit">Save Service</button>
       </div>
     </form>
   </dialog>
 
-  <dialog id="callDialog">
+  <dialog id="serviceViewDialog">
     <div class="modal-head">
-      <h2 id="callDialogTitle">Add Phone Call</h2>
-      <button class="close" id="callClose" type="button" aria-label="Close">&times;</button>
+      <h2 id="serviceViewTitle">Service Details</h2>
+      <button class="close" id="closeServiceView" type="button" aria-label="Close">x</button>
     </div>
-    <form id="callQuickForm">
-      <input type="hidden" id="callEntryId">
-      <div class="svc-editor-grid">
+    <div class="service-detail">
+      <div>
+        <span class="label">Date</span>
+        <span class="date-pill" id="serviceViewDate"></span>
+      </div>
+      <div>
+        <span class="label">Services performed</span>
+        <div class="note" id="serviceViewNote"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="taskDialog">
+    <div class="modal-head">
+      <h2 id="taskDialogTitle">Add Maintenance Task</h2>
+      <button class="close" id="closeTaskDialog" type="button" aria-label="Close">x</button>
+    </div>
+    <form id="taskForm">
+      <input type="hidden" id="taskId">
+      <div class="form-grid">
         <label>
-          Call date
-          <input id="callQuickDate" type="date">
+          Name of task
+          <input id="taskTitle" required placeholder="HVAC filter, gutters, appliance warranty">
         </label>
         <label>
-          Who we spoke to
-          <input id="callQuickPerson" placeholder="Name of the person on the call" required>
+          Event type
+          <select id="taskEventType">
+            <option value="recurring">Recurring work</option>
+            <option value="install">Appliance install date</option>
+            <option value="warranty">Warranty end date</option>
+          </select>
         </label>
         <label>
-          Note
-          <textarea id="callQuickNote" placeholder="What was discussed, what they promised, follow-up needed..."></textarea>
+          Last completed
+          <input id="taskLastDone" type="date">
+        </label>
+        <label>
+          Due date
+          <input id="taskNextDue" type="date">
+        </label>
+        <label>
+          How often to repeat
+          <select id="taskFrequency">
+            <option value="">No repeat</option>
+            <option value="30">30 days</option>
+            <option value="90">90 days</option>
+            <option value="180">6 months</option>
+            <option value="365">1 year</option>
+            <option value="730">2 years</option>
+            <option value="1095">3 years</option>
+          </select>
+        </label>
+        <label class="full">
+          Notes
+          <textarea id="taskNotes" placeholder="Filter size, appliance model, warranty details, preferred vendor, special reminders..."></textarea>
         </label>
       </div>
       <div class="form-actions">
-        <button class="btn ghost" id="callQuickCancel" type="button">Cancel</button>
-        <button class="btn teal" id="callQuickSave" type="submit">Save Call</button>
+        <button class="btn danger" id="deleteTaskBtn" type="button">Delete</button>
+        <button class="btn ghost" id="cancelTaskBtn" type="button">Cancel</button>
+        <button class="btn teal" type="submit">Save Task</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="vehicleDialog">
+    <div class="modal-head">
+      <h2 id="vehicleDialogTitle">Add Vehicle</h2>
+      <button class="close" id="closeVehicleDialog" type="button" aria-label="Close">x</button>
+    </div>
+    <form id="vehicleForm">
+      <input type="hidden" id="vehicleId">
+      <div class="form-grid">
+        <label>
+          Vehicle
+          <input id="vehicleName" required placeholder="2021 Toyota RAV4">
+        </label>
+        <label>
+          Owner
+          <input id="vehicleOwner" placeholder="Emily or Hameed">
+        </label>
+        <label>
+          Plate
+          <input id="vehiclePlate" placeholder="ABC 1234">
+        </label>
+        <label>
+          VIN
+          <input id="vehicleVin" placeholder="Vehicle identification number">
+        </label>
+        <label>
+          Insurance policy
+          <input id="vehicleInsurance" placeholder="Carrier and policy number">
+        </label>
+        <label>
+          Insurance renewal
+          <input id="vehicleInsuranceRenewal" type="date">
+        </label>
+        <label>
+          TN registration renewal month
+          <input id="vehicleRegistrationMonth" placeholder="March">
+        </label>
+        <label>
+          Last oil change date
+          <input id="vehicleOilDate" type="date">
+        </label>
+        <label>
+          Last oil change mileage
+          <input id="vehicleOilMileage" inputmode="numeric" placeholder="52,300">
+        </label>
+        <label>
+          Tire purchase date
+          <input id="vehicleTireDate" type="date">
+        </label>
+        <label class="full">
+          Inspection needs / notes
+          <textarea id="vehicleInspection" placeholder="Inspection needs, tire size, registration notes, maintenance reminders..."></textarea>
+        </label>
+      </div>
+      <div class="form-actions">
+        <button class="btn ghost" id="cancelVehicleBtn" type="button">Cancel</button>
+        <button class="btn teal" type="submit">Save Vehicle</button>
       </div>
     </form>
   </dialog>
@@ -621,53 +806,82 @@
 <script src="firebase-config.js"></script>
 <script>
   const STORAGE_KEY = "household-information-hub-v2";
-  const DELETED_KEY = "household-information-hub-deleted";
-  const PIN_KEY = "household-information-hub-pin";
-  const CLOUD_DOC_NOTE = "Household hub data. Documents sync through Firebase Storage when enabled; otherwise they stay in the browser where they were added.";
+  const CLOUD_DOC_NOTE = "Documents are stored in Firebase Storage when Firebase is connected.";
   const starterEntries = [
     {
       id: "starter-hvac",
+      title: "HVAC System",
       category: "HVAC",
       vendor: "Add your HVAC vendor",
-      nextDate: "",
-      services: [],
-      contactName: "", phone: "", email: "", website: "", address: "",
-      documents: [], updatedAt: ""
+      lastDate: "",
+      note: "Add the last maintenance visit, filters changed, parts replaced, and next service recommendation.",
+      contactName: "",
+      phone: "",
+      email: "",
+      website: "",
+      address: "",
+      documents: []
     },
     {
       id: "starter-plumbing",
+      title: "Plumbing",
       category: "Plumbing",
       vendor: "Add your plumber",
-      nextDate: "",
-      services: [],
-      contactName: "", phone: "", email: "", website: "", address: "",
-      documents: [], updatedAt: ""
+      lastDate: "",
+      note: "Track repairs, shutoff details, warranty notes, and preferred emergency contact.",
+      contactName: "",
+      phone: "",
+      email: "",
+      website: "",
+      address: "",
+      documents: []
     },
     {
       id: "starter-insurance",
+      title: "Home Insurance",
       category: "Insurance",
       vendor: "Add your insurance carrier",
-      nextDate: "",
-      services: [],
-      contactName: "", phone: "", email: "", website: "", address: "",
-      documents: [], updatedAt: ""
+      lastDate: "",
+      note: "Keep policy renewal details, claim contacts, deductibles, and coverage notes here.",
+      contactName: "",
+      phone: "",
+      email: "",
+      website: "",
+      address: "",
+      documents: []
     }
   ];
+  const starterMaintenanceTasks = [
+    { id: "task-hvac-filter", title: "HVAC filter", eventType: "recurring", lastDone: "", nextDue: "", frequencyDays: "90", notes: "Replace every 90 days. Add filter size here." },
+    { id: "task-water-heater", title: "Water heater flush", eventType: "recurring", lastDone: "", nextDue: "", frequencyDays: "365", notes: "Log install date, warranty end, and last flush." },
+    { id: "task-gutters", title: "Clean gutters", eventType: "recurring", lastDone: "", nextDue: "", frequencyDays: "180", notes: "Check downspouts and drainage." },
+    { id: "task-dryer-vent", title: "Dryer vent cleanout", eventType: "recurring", lastDone: "", nextDue: "", frequencyDays: "365", notes: "Clean vent line and exterior flap." },
+    { id: "task-smoke-batteries", title: "Smoke detector batteries", eventType: "recurring", lastDone: "", nextDue: "", frequencyDays: "365", notes: "Test smoke and CO detectors." },
+    { id: "task-septic-well", title: "Septic pump-out / well water test", eventType: "recurring", lastDone: "", nextDue: "", frequencyDays: "1095", notes: "Use if applicable in Maynardville. Track pump-out and well water testing." }
+  ];
+  const starterVehicles = [
+    { id: "vehicle-1", name: "Vehicle 1", owner: "", plate: "", vin: "", insurance: "", insuranceRenewal: "", registrationMonth: "", oilDate: "", oilMileage: "", tireDate: "", inspection: "" },
+    { id: "vehicle-2", name: "Vehicle 2", owner: "", plate: "", vin: "", insurance: "", insuranceRenewal: "", registrationMonth: "", oilDate: "", oilMileage: "", tireDate: "", inspection: "" }
+  ];
 
-  let entries = [];
-  let deletedIds = [];
+  const loadedState = loadAppState();
+  let entries = loadedState.entries;
+  let maintenanceTasks = loadedState.maintenanceTasks;
+  let vehicles = loadedState.vehicles;
   let draftDocs = [];
+  let calendarMonth = new Date();
+  calendarMonth.setDate(1);
   let saveTimer = null;
   let applyingRemote = false;
-  let pinHash = localStorage.getItem(PIN_KEY) || "";
   let firebaseSync = {
     ready: false,
-    storageReady: false,
     docRef: null,
     onSnapshot: null,
     setDoc: null,
     storage: null,
-    storageFns: null,
+    storageRef: null,
+    uploadBytes: null,
+    getDownloadURL: null,
     lastRemoteAt: null
   };
 
@@ -677,193 +891,235 @@
   const addBtn = document.getElementById("addBtn");
   const closeDialog = document.getElementById("closeDialog");
   const cancelBtn = document.getElementById("cancelBtn");
-  const saveBtn = document.getElementById("saveBtn");
   const searchInput = document.getElementById("searchInput");
   const categoryFilter = document.getElementById("categoryFilter");
-  const sortSelect = document.getElementById("sortSelect");
   const documentsInput = document.getElementById("documents");
   const attachedDocs = document.getElementById("attachedDocs");
-  const docsHelp = document.getElementById("docsHelp");
   const syncStatus = document.getElementById("syncStatus");
-  const exportBtn = document.getElementById("exportBtn");
-  const importBtn = document.getElementById("importBtn");
-  const importFile = document.getElementById("importFile");
+  const servicesSection = document.getElementById("servicesSection");
+  const vehiclesSection = document.getElementById("vehiclesSection");
+  const maintenanceCalendar = document.getElementById("maintenanceCalendar");
+  const taskMenuBtn = document.getElementById("taskMenuBtn");
+  const taskDropdown = document.getElementById("taskDropdown");
+  const calendarMonthLabel = document.getElementById("calendarMonthLabel");
+  const prevMonthBtn = document.getElementById("prevMonthBtn");
+  const nextMonthBtn = document.getElementById("nextMonthBtn");
+  const vehicleList = document.getElementById("vehicleList");
+  const addTaskBtn = document.getElementById("addTaskBtn");
+  const addVehicleBtn = document.getElementById("addVehicleBtn");
+  const serviceDialog = document.getElementById("serviceDialog");
+  const serviceForm = document.getElementById("serviceForm");
+  const closeServiceDialog = document.getElementById("closeServiceDialog");
+  const cancelServiceBtn = document.getElementById("cancelServiceBtn");
+  const serviceViewDialog = document.getElementById("serviceViewDialog");
+  const closeServiceView = document.getElementById("closeServiceView");
+  const taskDialog = document.getElementById("taskDialog");
+  const taskForm = document.getElementById("taskForm");
+  const closeTaskDialog = document.getElementById("closeTaskDialog");
+  const cancelTaskBtn = document.getElementById("cancelTaskBtn");
+  const deleteTaskBtn = document.getElementById("deleteTaskBtn");
+  const vehicleDialog = document.getElementById("vehicleDialog");
+  const vehicleForm = document.getElementById("vehicleForm");
+  const closeVehicleDialog = document.getElementById("closeVehicleDialog");
+  const cancelVehicleBtn = document.getElementById("cancelVehicleBtn");
 
-  /* ---------- IndexedDB for locally stored documents ---------- */
-  const docsDB = {
-    dbPromise: null,
-    open() {
-      if (this.dbPromise) return this.dbPromise;
-      this.dbPromise = new Promise((resolve, reject) => {
-        const req = indexedDB.open("household-hub-docs", 1);
-        req.onupgradeneeded = () => req.result.createObjectStore("docs");
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
-      return this.dbPromise;
-    },
-    async put(id, dataUrl) {
-      const db = await this.open();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction("docs", "readwrite");
-        tx.objectStore("docs").put(dataUrl, id);
-        tx.oncomplete = resolve;
-        tx.onerror = () => reject(tx.error);
-      });
-    },
-    async get(id) {
-      const db = await this.open();
-      return new Promise((resolve, reject) => {
-        const req = db.transaction("docs").objectStore("docs").get(id);
-        req.onsuccess = () => resolve(req.result || null);
-        req.onerror = () => reject(req.error);
-      });
-    },
-    async delete(id) {
-      const db = await this.open();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction("docs", "readwrite");
-        tx.objectStore("docs").delete(id);
-        tx.oncomplete = resolve;
-        tx.onerror = () => reject(tx.error);
-      });
-    }
-  };
-
-  /* ---------- Load, migrate, save ---------- */
-  function loadRawEntries() {
+  function loadAppState() {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return structuredClone(starterEntries);
+    if (!saved) return { entries: starterEntries, maintenanceTasks: starterMaintenanceTasks, vehicles: starterVehicles };
     try {
       const parsed = JSON.parse(saved);
-      return Array.isArray(parsed) ? parsed : structuredClone(starterEntries);
+      if (Array.isArray(parsed)) return { entries: parsed, maintenanceTasks: starterMaintenanceTasks, vehicles: starterVehicles };
+      return {
+        entries: Array.isArray(parsed.entries) ? parsed.entries : starterEntries,
+        maintenanceTasks: Array.isArray(parsed.maintenanceTasks) ? parsed.maintenanceTasks : starterMaintenanceTasks,
+        vehicles: Array.isArray(parsed.vehicles) ? parsed.vehicles : starterVehicles
+      };
     } catch {
-      return structuredClone(starterEntries);
+      return { entries: starterEntries, maintenanceTasks: starterMaintenanceTasks, vehicles: starterVehicles };
     }
   }
 
-  function loadDeletedIds() {
-    try {
-      const parsed = JSON.parse(localStorage.getItem(DELETED_KEY) || "[]");
-      return Array.isArray(parsed) ? parsed : [];
-    } catch { return []; }
-  }
-
-  function migrateServices(list) {
-    // Older versions kept a single lastDate + note; fold them into service history.
-    // Legacy page titles are cleared per Emily's request - category is the name now.
-    let changed = false;
-    for (const entry of list) {
-      if (!Array.isArray(entry.services)) {
-        entry.services = [];
-        if (entry.lastDate || entry.note) {
-          entry.services.push({ id: uid(), date: entry.lastDate || "", note: entry.note || "" });
-        }
-        delete entry.lastDate;
-        delete entry.note;
-        changed = true;
-      }
-      if ("title" in entry) {
-        delete entry.title;
-        changed = true;
-      }
-    }
-    return changed;
-  }
-
-  function allDocs(entry) {
-    return [
-      ...(entry.documents || []),
-      ...(entry.services || []).flatMap(svc => svc.documents || [])
-    ];
-  }
-
-  function latestServiceDate(entry) {
-    const dates = (entry.services || []).map(svc => svc.date).filter(Boolean).sort();
-    return dates[dates.length - 1] || "";
-  }
-
-  function groupByDate(list) {
-    const groups = new Map();
-    (list || []).forEach(item => {
-      const key = item.date || "";
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(item);
-    });
-    return [...groups.entries()]
-      .sort((a, b) => {
-        if (!a[0]) return 1;
-        if (!b[0]) return -1;
-        return a[0] < b[0] ? 1 : -1;
-      })
-      .map(([date, items]) => ({ date, items }));
-  }
-
-  function servicesByDate(entry) {
-    return groupByDate(entry.services);
-  }
-
-  function callsByDate(entry) {
-    return groupByDate(entry.calls);
-  }
-
-  async function migrateLegacyDocs(list) {
-    // Older versions kept base64 file data inside localStorage entries.
-    // Move that data into IndexedDB so localStorage can't overflow.
-    let moved = false;
-    for (const entry of list) {
-      const docs = entry.documents || [];
-      for (const doc of docs) {
-        if (doc.data && !doc.docId && !doc.url) {
-          doc.docId = uid();
-          try {
-            await docsDB.put(doc.docId, doc.data);
-            delete doc.data;
-            doc.storedLocally = true;
-            moved = true;
-          } catch {
-            // If IndexedDB fails, leave the data where it is.
-            delete doc.docId;
-          }
-        }
-      }
-    }
-    if (moved) saveEntries(true);
-    return list;
-  }
-
-  function saveEntries(localOnly = false) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-      localStorage.setItem(DELETED_KEY, JSON.stringify(deletedIds.slice(-200)));
-    } catch {
-      updateSyncStatus("Storage is full - export a backup, then remove old documents");
-    }
-    if (!applyingRemote && !localOnly) queueCloudSave();
+  function saveEntries() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ entries, maintenanceTasks, vehicles }));
+    if (!applyingRemote) queueCloudSave();
   }
 
   function updateSyncStatus(message) {
     syncStatus.textContent = message;
   }
 
-  function firebaseErrorMessage(err, fallback) {
-    const code = String((err && (err.code || err.message)) || "").toLowerCase();
-    if (code.includes("permission-denied") || code.includes("insufficient permissions")) {
-      return "Firebase is blocking this page - publish the Firestore rules (DEPLOY.md step 5)";
-    }
-    if (code.includes("auth/")) {
-      return "Firebase sign-in failed - enable Anonymous auth (DEPLOY.md step 3)";
-    }
-    if (code.includes("not-found") || code.includes("does not exist")) {
-      return "Firestore database not found - create it (DEPLOY.md step 4)";
-    }
-    return fallback;
+  function hasFirebaseConfig() {
+    const cfg = window.HH_FIREBASE_CONFIG || {};
+    return !!(cfg.apiKey && cfg.projectId && cfg.appId && !String(cfg.apiKey).includes("PASTE_"));
   }
 
-  /* ---------- Helpers ---------- */
+  function entriesForCloud() {
+    return entries.map(entry => ({
+      ...entry,
+      documents: (entry.documents || []).map(doc => ({
+        name: doc.name,
+        type: doc.type || "",
+        size: doc.size || 0,
+        path: doc.path || "",
+        url: doc.url || "",
+        storedInFirebase: !!doc.url
+      }))
+    }));
+  }
+
+  function mergeCloudEntries(cloudEntries) {
+    const localDocs = new Map(entries.map(entry => [entry.id, entry.documents || []]));
+    return cloudEntries.map(entry => {
+      const cloudDocs = entry.documents || [];
+      const savedDocs = localDocs.get(entry.id) || [];
+      const docs = cloudDocs.map(cloudDoc => {
+        const saved = savedDocs.find(doc => doc.path && doc.path === cloudDoc.path) ||
+          savedDocs.find(doc => doc.name === cloudDoc.name && doc.size === cloudDoc.size);
+        return { ...cloudDoc, ...saved, url: cloudDoc.url || saved?.url || "", path: cloudDoc.path || saved?.path || "" };
+      });
+      return { ...entry, documents: docs };
+    });
+  }
+
+  function dataUrlToBlob(dataUrl) {
+    const [header, base64] = dataUrl.split(",");
+    const mime = (header.match(/data:(.*?);base64/) || [])[1] || "application/octet-stream";
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+    return new Blob([bytes], { type: mime });
+  }
+
+  function cleanFileName(name) {
+    return String(name || "document").replace(/[^a-z0-9._-]/gi, "-").slice(0, 90);
+  }
+
+  async function uploadDraftDocuments(entryId, docs) {
+    if (!firebaseSync.ready || !firebaseSync.storage) return docs;
+    const uploaded = [];
+    for (const doc of docs) {
+      if (doc.url || !doc.data) {
+        uploaded.push(doc);
+        continue;
+      }
+      updateSyncStatus(`Uploading ${doc.name}...`);
+      const path = `household-documents/${entryId}/${Date.now()}-${cleanFileName(doc.name)}`;
+      const fileRef = firebaseSync.storageRef(firebaseSync.storage, path);
+      const blob = dataUrlToBlob(doc.data);
+      await firebaseSync.uploadBytes(fileRef, blob, { contentType: doc.type || blob.type });
+      const url = await firebaseSync.getDownloadURL(fileRef);
+      uploaded.push({
+        name: doc.name,
+        type: doc.type || blob.type,
+        size: doc.size || blob.size,
+        path,
+        url,
+        storedInFirebase: true
+      });
+    }
+    return uploaded;
+  }
+
+  function queueCloudSave() {
+    clearTimeout(saveTimer);
+    if (!firebaseSync.ready) {
+      updateSyncStatus("Saved on this device");
+      return;
+    }
+    updateSyncStatus("Saving shared details...");
+    saveTimer = setTimeout(saveToCloud, 450);
+  }
+
+  async function saveToCloud() {
+    if (!firebaseSync.ready) return;
+    try {
+      const updatedAt = new Date().toISOString();
+      firebaseSync.lastRemoteAt = updatedAt;
+      await firebaseSync.setDoc(firebaseSync.docRef, {
+        entries: entriesForCloud(),
+        maintenanceTasks,
+        vehicles,
+        updatedAt,
+        note: CLOUD_DOC_NOTE
+      }, { merge: true });
+      updateSyncStatus("Synced with Firebase");
+    } catch {
+      updateSyncStatus("Saved here; Firebase sync failed");
+    }
+  }
+
+  async function initFirebaseSync() {
+    if (!hasFirebaseConfig()) {
+      updateSyncStatus("Saved on this device - add Firebase config to sync");
+      return;
+    }
+    try {
+      updateSyncStatus("Connecting to Firebase...");
+      const appMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js");
+      const authMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js");
+      const fireMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+      const storageMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js");
+      const app = appMod.initializeApp(window.HH_FIREBASE_CONFIG);
+      const auth = authMod.getAuth(app);
+      await authMod.signInAnonymously(auth);
+      const db = fireMod.getFirestore(app);
+      const storage = storageMod.getStorage(app);
+      const docPath = window.HH_FIREBASE_DOC_PATH || "households/default";
+      firebaseSync = {
+        ready: true,
+        docRef: fireMod.doc(db, ...docPath.split("/")),
+        onSnapshot: fireMod.onSnapshot,
+        setDoc: fireMod.setDoc,
+        storage,
+        storageRef: storageMod.ref,
+        uploadBytes: storageMod.uploadBytes,
+        getDownloadURL: storageMod.getDownloadURL,
+        lastRemoteAt: null
+      };
+
+      const snap = await fireMod.getDoc(firebaseSync.docRef);
+      if (snap.exists() && Array.isArray(snap.data().entries)) {
+        applyingRemote = true;
+        entries = mergeCloudEntries(snap.data().entries);
+        maintenanceTasks = Array.isArray(snap.data().maintenanceTasks) ? snap.data().maintenanceTasks : maintenanceTasks;
+        vehicles = Array.isArray(snap.data().vehicles) ? snap.data().vehicles : vehicles;
+        firebaseSync.lastRemoteAt = snap.data().updatedAt || null;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ entries, maintenanceTasks, vehicles }));
+        applyingRemote = false;
+        renderAll();
+        updateSyncStatus("Loaded shared Firebase data");
+      } else {
+        await saveToCloud();
+      }
+
+      firebaseSync.onSnapshot(firebaseSync.docRef, snap => {
+        if (!snap.exists() || !Array.isArray(snap.data().entries)) return;
+        const updatedAt = snap.data().updatedAt || null;
+        if (updatedAt && updatedAt === firebaseSync.lastRemoteAt) return;
+        firebaseSync.lastRemoteAt = updatedAt;
+        applyingRemote = true;
+        entries = mergeCloudEntries(snap.data().entries);
+        maintenanceTasks = Array.isArray(snap.data().maintenanceTasks) ? snap.data().maintenanceTasks : maintenanceTasks;
+        vehicles = Array.isArray(snap.data().vehicles) ? snap.data().vehicles : vehicles;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ entries, maintenanceTasks, vehicles }));
+        applyingRemote = false;
+        renderAll();
+        updateSyncStatus("Updated from Firebase");
+      });
+      updateSyncStatus("Synced with Firebase");
+    } catch {
+      firebaseSync.ready = false;
+      updateSyncStatus("Firebase not connected - saved on this device");
+    }
+  }
+
   function uid() {
     if (crypto.randomUUID) return crypto.randomUUID();
     return `entry-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  function serviceUid() {
+    return `service-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }
 
   function escapeHtml(value) {
@@ -875,216 +1131,216 @@
       .replaceAll("'", "&#039;");
   }
 
-  function normalizeWebsite(value) {
-    const trimmed = (value || "").trim();
-    if (!trimmed) return "";
-    return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-  }
-
   function formatDate(dateString) {
     if (!dateString) return "No date yet";
     const date = new Date(`${dateString}T00:00:00`);
     return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
   }
 
-  function dueInfo(entry) {
-    if (!entry.nextDate) return null;
+  function addDays(dateString, days) {
+    if (!dateString || !days) return "";
+    const date = new Date(`${dateString}T00:00:00`);
+    date.setDate(date.getDate() + Number(days));
+    return date.toISOString().slice(0, 10);
+  }
+
+  function dueClass(dateString) {
+    if (!dateString) return "";
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const due = new Date(`${entry.nextDate}T00:00:00`);
-    const days = Math.round((due - today) / 86400000);
-    if (days < 0) return { cls: "overdue", text: `Overdue - ${formatDate(entry.nextDate)}` };
-    if (days <= 30) return { cls: "soon", text: `Due soon - ${formatDate(entry.nextDate)}` };
-    return { cls: "ok", text: `Next - ${formatDate(entry.nextDate)}` };
+    const due = new Date(`${dateString}T00:00:00`);
+    const diffDays = Math.ceil((due - today) / 86400000);
+    if (diffDays < 0) return "overdue";
+    if (diffDays <= 30) return "soon";
+    return "";
+  }
+
+  function eventTypeLabel(type) {
+    if (type === "install") return "Appliance install date";
+    if (type === "warranty") return "Warranty end date";
+    return "Recurring work";
+  }
+
+  function normalizePhone(phone) {
+    return String(phone || "").replace(/[^\d+]/g, "");
+  }
+
+  function serviceHistoryFor(entry) {
+    const history = Array.isArray(entry.serviceHistory) ? [...entry.serviceHistory] : [];
+    if ((entry.lastDate || entry.note) && !history.some(item => item.date === entry.lastDate && item.note === entry.note)) {
+      history.push({
+        id: `legacy-${entry.id}-${entry.lastDate || "undated"}`,
+        date: entry.lastDate || "",
+        note: entry.note || "No service note yet."
+      });
+    }
+    return history
+      .filter(item => item.date || item.note)
+      .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  }
+
+  function latestService(entry) {
+    const history = serviceHistoryFor(entry);
+    return history[0] || { date: entry.lastDate || "", note: entry.note || "" };
+  }
+
+  function upsertServiceHistory(existingHistory, date, note) {
+    const history = Array.isArray(existingHistory) ? [...existingHistory] : [];
+    if (!date && !note) return history;
+    const found = history.find(item => item.date === date);
+    if (found) {
+      found.note = note || found.note;
+    } else {
+      history.push({ id: serviceUid(), date, note });
+    }
+    return history.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
   }
 
   function searchable(entry) {
     return [
-      entry.category, entry.vendor, entry.nextDate,
-      entry.contactName, entry.phone, entry.email, entry.website, entry.address,
-      ...(entry.services || []).flatMap(svc => [svc.date, svc.note, ...(svc.documents || []).map(doc => doc.name)]),
-      ...(entry.calls || []).flatMap(call => [call.date, call.person, call.note]),
+      entry.title,
+      entry.category,
+      entry.vendor,
+      entry.lastDate,
+      entry.note,
+      ...serviceHistoryFor(entry).flatMap(item => [item.date, item.note]),
+      entry.contactName,
+      entry.phone,
+      entry.email,
+      entry.website,
+      entry.address,
       ...(entry.documents || []).map(doc => doc.name)
     ].join(" ").toLowerCase();
   }
 
-  /* ---------- In-app confirm (replaces window.confirm for Notion embeds) ---------- */
-  const confirmDialog = document.getElementById("confirmDialog");
-  const confirmMessage = document.getElementById("confirmMessage");
-  const confirmTitle = document.getElementById("confirmTitle");
-  const confirmOk = document.getElementById("confirmOk");
-  const confirmCancel = document.getElementById("confirmCancel");
-  const confirmClose = document.getElementById("confirmClose");
-  let confirmResolve = null;
-
-  function confirmAction(message, { title = "Please confirm", okText = "Delete", showCancel = true } = {}) {
-    confirmTitle.textContent = title;
-    confirmMessage.textContent = message;
-    confirmOk.textContent = okText;
-    confirmOk.className = okText === "OK" ? "btn teal" : "btn danger";
-    confirmCancel.hidden = !showCancel;
-    confirmDialog.showModal();
-    return new Promise(resolve => { confirmResolve = resolve; });
+  function vehicleSearchable(vehicle) {
+    return [
+      vehicle.name,
+      vehicle.owner,
+      vehicle.plate,
+      vehicle.vin,
+      vehicle.insurance,
+      vehicle.insuranceRenewal,
+      vehicle.registrationMonth,
+      vehicle.oilDate,
+      vehicle.oilMileage,
+      vehicle.tireDate,
+      vehicle.inspection
+    ].join(" ").toLowerCase();
   }
 
-  function settleConfirm(result) {
-    if (confirmResolve) confirmResolve(result);
-    confirmResolve = null;
-    confirmDialog.close();
+  function taskSearchable(task) {
+    return [task.title, task.eventType, task.nextDue, task.lastDone, task.frequencyDays, task.notes].join(" ").toLowerCase();
   }
 
-  confirmOk.addEventListener("click", () => settleConfirm(true));
-  confirmCancel.addEventListener("click", () => settleConfirm(false));
-  confirmClose.addEventListener("click", () => settleConfirm(false));
-  confirmDialog.addEventListener("cancel", () => { if (confirmResolve) confirmResolve(false); confirmResolve = null; });
-
-  function showNotice(message, title = "Heads up") {
-    return confirmAction(message, { title, okText: "OK", showCancel: false });
+  function currentQuery() {
+    return searchInput.value.trim().toLowerCase();
   }
 
-  /* ---------- Filtering, sorting, rendering ---------- */
+  function currentCategory() {
+    return categoryFilter.value;
+  }
+
   function filteredEntries() {
-    const query = searchInput.value.trim().toLowerCase();
-    const category = categoryFilter.value;
-    const sort = sortSelect.value;
+    const query = currentQuery();
     const list = entries.filter(entry => {
-      const matchesQuery = !query || searchable(entry).includes(query);
-      const matchesCategory = category === "all" || entry.category === category;
-      return matchesQuery && matchesCategory;
+      return !query || searchable(entry).includes(query);
     });
 
     list.sort((a, b) => {
-      if (sort === "category") return (a.category || "").localeCompare(b.category || "");
-      if (sort === "vendor") return (a.vendor || "").localeCompare(b.vendor || "");
-      if (sort === "due") {
-        const aDue = a.nextDate ? new Date(a.nextDate).getTime() : Infinity;
-        const bDue = b.nextDate ? new Date(b.nextDate).getTime() : Infinity;
-        return aDue - bDue;
-      }
-      const aDate = latestServiceDate(a);
-      const bDate = latestServiceDate(b);
-      const aTime = aDate ? new Date(aDate).getTime() : 0;
-      const bTime = bDate ? new Date(bDate).getTime() : 0;
-      return sort === "oldest" ? aTime - bTime : bTime - aTime;
+      const aTime = a.lastDate ? new Date(a.lastDate).getTime() : 0;
+      const bTime = b.lastDate ? new Date(b.lastDate).getTime() : 0;
+      return bTime - aTime;
     });
     return list;
   }
 
-  function renderCategoryOptions() {
-    const current = categoryFilter.value;
-    const categories = [...new Set(entries.map(entry => entry.category).filter(Boolean))].sort();
-    categoryFilter.innerHTML = '<option value="all">All categories</option>';
-    categories.forEach(category => {
-      const option = document.createElement("option");
-      option.value = category;
-      option.textContent = category;
-      categoryFilter.appendChild(option);
-    });
-    categoryFilter.value = categories.includes(current) ? current : "all";
-  }
-
-  function docChip(entry, doc, index, svcId = "") {
-    if (doc.url) {
-      return `<a class="doc" href="${escapeHtml(doc.url)}" target="_blank" rel="noreferrer">${escapeHtml(doc.name)}</a>`;
-    }
-    return `<button class="doc" type="button" data-open-doc data-entry="${entry.id}" data-svc="${svcId}" data-index="${index}">${escapeHtml(doc.name)}</button>`;
-  }
-
-  function serviceGroupsHtml(entry) {
-    const groups = servicesByDate(entry);
-    if (!groups.length) return "<span>No services logged yet. Tap + Service to add one.</span>";
-    return groups.map((group, index) => `
-      <details class="svc-group" ${index === 0 ? "open" : ""}>
-        <summary>
-          <span>${group.date ? formatDate(group.date) : "No date yet"}</span>
-          <span class="svc-count">${group.items.length} ${group.items.length === 1 ? "service" : "services"}</span>
-        </summary>
-        ${group.items.map(svc => `
-          <div class="svc-item">
-            <div class="svc-note">${escapeHtml(svc.note || "No note")}</div>
-            ${(svc.documents || []).length ? `<div class="docs svc-docs">${svc.documents.map((doc, i) => docChip(entry, doc, i, svc.id)).join("")}</div>` : ""}
-          </div>`).join("")}
-      </details>
-    `).join("");
-  }
-
-  function callGroupsHtml(entry) {
-    const groups = callsByDate(entry);
-    if (!groups.length) return "<span>No calls logged yet. Tap + Call to add one.</span>";
-    return groups.map((group, index) => `
-      <details class="svc-group" ${index === 0 ? "open" : ""}>
-        <summary>
-          <span>${group.date ? formatDate(group.date) : "No date yet"}</span>
-          <span class="svc-count">${group.items.length} ${group.items.length === 1 ? "call" : "calls"}</span>
-        </summary>
-        ${group.items.map(call => `
-          <div class="svc-item">
-            ${call.person ? `<div class="call-person">Spoke with ${escapeHtml(call.person)}</div>` : ""}
-            <div class="svc-note">${escapeHtml(call.note || "No note")}</div>
-          </div>`).join("")}
-      </details>
-    `).join("");
-  }
-
   function renderCards() {
-    renderCategoryOptions();
-    const list = filteredEntries();
+    if (currentCategory() !== "all" && currentCategory() !== "services") {
+      servicesSection.style.display = "none";
+      cards.innerHTML = "";
+      return;
+    }
+    servicesSection.style.display = "";
+    const list = filteredEntries().filter(entry => {
+      return entry.title || entry.vendor || entry.note || entry.contactName || entry.phone || entry.email || entry.website || entry.address || (entry.documents || []).length || serviceHistoryFor(entry).length;
+    });
     cards.innerHTML = "";
 
     if (!list.length) {
-      cards.innerHTML = '<div class="empty"><strong>No pages found</strong>Add a new household page or change your search.</div>';
+      cards.innerHTML = "";
       return;
     }
 
     list.forEach(entry => {
       const article = document.createElement("article");
       article.className = "card";
-      const phone = entry.phone ? `<a href="tel:${entry.phone.replace(/[^\d+]/g, "")}">${escapeHtml(entry.phone)}</a>` : "";
+      const history = serviceHistoryFor(entry);
+      const latest = latestService(entry);
+      const historyChips = history.map(item => `
+        <button class="history-chip" type="button" data-action="view-service" data-id="${entry.id}" data-service-id="${item.id}">
+          ${formatDate(item.date)}
+        </button>
+      `).join("");
+      const phoneNumber = normalizePhone(entry.phone);
+      const phone = entry.phone ? `<span>${escapeHtml(entry.phone)}</span>` : "";
       const email = entry.email ? `<a href="mailto:${escapeHtml(entry.email)}">${escapeHtml(entry.email)}</a>` : "";
-      const site = entry.website ? `<a href="${escapeHtml(normalizeWebsite(entry.website))}" target="_blank" rel="noreferrer">${escapeHtml(entry.website.replace(/^https?:\/\//, ""))}</a>` : "";
-      const docs = (entry.documents || []).map((doc, index) => docChip(entry, doc, index)).join("");
-      const due = dueInfo(entry);
+      const site = entry.website ? `<a href="${escapeHtml(entry.website)}" target="_blank" rel="noreferrer">${escapeHtml(entry.website.replace(/^https?:\/\//, ""))}</a>` : "";
+      const contactActions = `
+        <div class="contact-actions">
+          ${phoneNumber ? `<a class="contact-link primary" href="tel:${phoneNumber}">Call</a>` : ""}
+          ${entry.email ? `<a class="contact-link" href="mailto:${escapeHtml(entry.email)}">Email</a>` : ""}
+          ${entry.website ? `<a class="contact-link" href="${escapeHtml(entry.website)}" target="_blank" rel="noreferrer">Website</a>` : ""}
+        </div>
+      `;
+      const docs = (entry.documents || []).map(doc => {
+        const href = doc.url || doc.data || "";
+        if (!href) return `<span class="doc">${escapeHtml(doc.name)} unavailable</span>`;
+        return `<a class="doc" href="${escapeHtml(href)}" target="_blank" rel="noreferrer" download="${escapeHtml(doc.name)}">${escapeHtml(doc.name)}</a>`;
+      }).join("");
 
       article.innerHTML = `
         <div class="card-head">
-          <h2>${escapeHtml(entry.category || "Other")}</h2>
-          <p class="vendor">${escapeHtml(entry.vendor || "No vendor yet")}</p>
-          ${due ? `<span class="due-badge ${due.cls}">${escapeHtml(due.text)}</span>` : ""}
+          <h2>${escapeHtml(entry.title || "Title")}</h2>
+          <p class="vendor">${escapeHtml(entry.vendor || "Vendor")}</p>
         </div>
         <div class="card-body">
-          <details class="contact-card">
-            <summary>Contact Info</summary>
-            <div class="contact">
+          <section class="last-service">
+            <h3>Last Service</h3>
+            <div>
+              <span class="label">Date</span>
+              <span class="date-pill">${formatDate(latest.date)}</span>
+            </div>
+            <div>
+              <span class="label">Services performed</span>
+              <div class="note">${escapeHtml(latest.note || "No service note yet.")}</div>
+            </div>
+          </section>
+          <section class="service-history">
+            <div class="section-head">
+              <h3>Service History</h3>
+              <button class="btn small teal" type="button" data-action="add-service" data-id="${entry.id}">+ Add Service</button>
+            </div>
+            <div class="history-list">${historyChips || "<span>No saved service dates yet.</span>"}</div>
+          </section>
+          <div>
+            <span class="label">Contact Info</span>
+            <div class="contact centered">
               ${entry.contactName ? `<span>${escapeHtml(entry.contactName)}</span>` : ""}
               ${phone}
               ${email}
               ${site}
               ${entry.address ? `<span>${escapeHtml(entry.address)}</span>` : ""}
               ${!entry.contactName && !entry.phone && !entry.email && !entry.website && !entry.address ? "<span>No contact info yet.</span>" : ""}
+              ${(phoneNumber || entry.email || entry.website) ? contactActions : ""}
             </div>
-          </details>
+          </div>
           <div>
             <span class="label">Documents</span>
             <div class="docs">${docs || "<span>No documents uploaded.</span>"}</div>
           </div>
-          <details class="svc-history">
-            <summary>
-              <h3>Service History</h3>
-              <span class="svc-count">${(entry.services || []).length} ${(entry.services || []).length === 1 ? "service" : "services"}</span>
-            </summary>
-            ${serviceGroupsHtml(entry)}
-          </details>
-          <details class="svc-history">
-            <summary>
-              <h3>Phone Calls</h3>
-              <span class="svc-count">${(entry.calls || []).length} ${(entry.calls || []).length === 1 ? "call" : "calls"}</span>
-            </summary>
-            ${callGroupsHtml(entry)}
-          </details>
         </div>
         <div class="card-actions">
-          <button class="btn small teal" data-action="quickadd" data-id="${entry.id}">+ Service</button>
-          <button class="btn small teal" data-action="quickcall" data-id="${entry.id}">+ Call</button>
           <button class="btn small ghost" data-action="edit" data-id="${entry.id}">Edit</button>
           <button class="btn small danger" data-action="delete" data-id="${entry.id}">Delete</button>
         </div>
@@ -1093,30 +1349,139 @@
     });
   }
 
-  /* ---------- Editor ---------- */
+  function renderMaintenanceTasks() {
+    const query = currentQuery();
+    const category = currentCategory();
+    const visibleTasks = maintenanceTasks.filter(task => (!query || taskSearchable(task).includes(query)) && (category === "all" || category === "maintenance"));
+    const visibleServices = entries
+      .filter(entry => category === "all" || category === "services")
+      .filter(entry => !query || searchable(entry).includes(query));
+    const visibleVehicles = vehicles
+      .filter(vehicle => category === "all" || category === "vehicles")
+      .filter(vehicle => !query || vehicleSearchable(vehicle).includes(query));
+    const calendarEvents = [
+      ...visibleTasks.filter(task => task.nextDue).map(task => ({
+        id: task.id,
+        kind: "maintenance",
+        date: task.nextDue,
+        title: task.title || "Maintenance",
+        meta: task.frequencyDays ? `Repeats every ${task.frequencyDays} days` : eventTypeLabel(task.eventType),
+        detail: `Last done: ${formatDate(task.lastDone)}`,
+        eventType: task.eventType || "recurring"
+      })),
+      ...visibleServices.flatMap(entry => serviceHistoryFor(entry).filter(service => service.date).map(service => ({
+        id: entry.id,
+        serviceId: service.id,
+        kind: "service",
+        date: service.date,
+        title: entry.title || "Service",
+        meta: entry.vendor || "Service record",
+        detail: service.note || "No service note.",
+        eventType: "service"
+      }))),
+      ...visibleVehicles.flatMap(vehicle => [
+        vehicle.insuranceRenewal ? { id: vehicle.id, kind: "vehicle", date: vehicle.insuranceRenewal, title: `${vehicle.name || "Vehicle"} insurance`, meta: "Insurance renewal", detail: vehicle.insurance || "", eventType: "vehicle" } : null,
+        vehicle.oilDate ? { id: vehicle.id, kind: "vehicle", date: vehicle.oilDate, title: `${vehicle.name || "Vehicle"} oil change`, meta: "Last oil change", detail: vehicle.oilMileage ? `${vehicle.oilMileage} miles` : "", eventType: "vehicle" } : null,
+        vehicle.tireDate ? { id: vehicle.id, kind: "vehicle", date: vehicle.tireDate, title: `${vehicle.name || "Vehicle"} tires`, meta: "Tire purchase date", detail: "", eventType: "vehicle" } : null
+      ].filter(Boolean))
+    ];
+    const monthStart = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1);
+    const monthEnd = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 0);
+    const gridStart = new Date(monthStart);
+    gridStart.setDate(gridStart.getDate() - gridStart.getDay());
+    calendarMonthLabel.textContent = monthStart.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => `<div class="weekday">${day}</div>`).join("");
+    const days = [];
+    for (let index = 0; index < 42; index += 1) {
+      const day = new Date(gridStart);
+      day.setDate(gridStart.getDate() + index);
+      const dateKey = day.toISOString().slice(0, 10);
+      const isCurrentMonth = day >= monthStart && day <= monthEnd;
+      const dayEvents = calendarEvents.filter(item => item.date === dateKey);
+      days.push(`
+        <div class="calendar-day ${isCurrentMonth ? "" : "muted"}">
+          <div class="day-number">${day.getDate()}</div>
+          ${dayEvents.map(item => `
+            <div class="calendar-event ${escapeHtml(item.eventType || item.kind)}" data-event-kind="${item.kind}" data-id="${item.id}" ${item.serviceId ? `data-service-id="${item.serviceId}"` : ""}>
+              <strong>${escapeHtml(item.title)}</strong>
+              <span>${escapeHtml(item.meta || "")}</span>
+              <span>${escapeHtml(item.detail || "")}</span>
+              <span class="event-actions">
+                ${item.kind === "maintenance" ? `<button class="btn small ghost" type="button" data-task-action="edit" data-id="${item.id}">Edit</button><button class="btn small teal" type="button" data-task-action="done" data-id="${item.id}">Mark Done</button>` : ""}
+                ${item.kind === "service" ? `<button class="btn small ghost" type="button" data-action="view-service" data-id="${item.id}" data-service-id="${item.serviceId}">View</button>` : ""}
+                ${item.kind === "vehicle" ? `<button class="btn small ghost" type="button" data-vehicle-action="edit" data-id="${item.id}">Edit Vehicle</button>` : ""}
+              </span>
+            </div>
+          `).join("")}
+        </div>
+      `);
+    }
+    maintenanceCalendar.innerHTML = weekdays + days.join("");
+    const sorted = [...calendarEvents].sort((a, b) => (a.date || "9999").localeCompare(b.date || "9999"));
+    taskDropdown.innerHTML = sorted.map(item => `
+      <button type="button" data-menu-kind="${item.kind}" data-id="${item.id}" ${item.serviceId ? `data-service-id="${item.serviceId}"` : ""}>
+        <strong>${escapeHtml(item.title || "Event")}</strong>
+        <span>${escapeHtml(item.kind)} - ${formatDate(item.date)}</span>
+      </button>
+    `).join("") || '<button type="button"><strong>No events found</strong><span>Add an event or clear search.</span></button>';
+  }
+
+  function renderVehicles() {
+    if (currentCategory() !== "all" && currentCategory() !== "vehicles") {
+      vehiclesSection.style.display = "none";
+      vehicleList.innerHTML = "";
+      return;
+    }
+    vehiclesSection.style.display = "";
+    const query = currentQuery();
+    const list = vehicles.filter(vehicle => !query || vehicleSearchable(vehicle).includes(query));
+    vehicleList.innerHTML = list.map(vehicle => `
+      <article class="record-card">
+        <div class="record-top">
+          <div>
+            <span class="category">${escapeHtml(vehicle.owner || "Vehicle")}</span>
+            <h3>${escapeHtml(vehicle.name || "Unnamed vehicle")}</h3>
+            <p class="vendor">${escapeHtml(vehicle.plate ? `Plate: ${vehicle.plate}` : "No plate saved")}</p>
+          </div>
+          <span class="task-due ${dueClass(vehicle.insuranceRenewal)}">${vehicle.insuranceRenewal ? `Insurance ${formatDate(vehicle.insuranceRenewal)}` : "No renewal date"}</span>
+        </div>
+        <div class="record-meta">
+          <div class="meta-box"><span class="label">VIN</span><strong>${escapeHtml(vehicle.vin || "Not saved")}</strong></div>
+          <div class="meta-box"><span class="label">Insurance</span><strong>${escapeHtml(vehicle.insurance || "Not saved")}</strong></div>
+          <div class="meta-box"><span class="label">TN registration</span><strong>${escapeHtml(vehicle.registrationMonth || "Not saved")}</strong></div>
+          <div class="meta-box"><span class="label">Oil change</span><strong>${formatDate(vehicle.oilDate)}${vehicle.oilMileage ? ` at ${escapeHtml(vehicle.oilMileage)} mi` : ""}</strong></div>
+          <div class="meta-box"><span class="label">Tires purchased</span><strong>${formatDate(vehicle.tireDate)}</strong></div>
+          <div class="meta-box"><span class="label">Inspection needs</span><strong>${escapeHtml(vehicle.inspection || "None saved")}</strong></div>
+        </div>
+        <div class="record-actions">
+          <button class="btn small ghost" data-vehicle-action="edit" data-id="${vehicle.id}">Edit</button>
+          <button class="btn small danger" data-vehicle-action="delete" data-id="${vehicle.id}">Delete</button>
+        </div>
+      </article>
+    `).join("") || '<div class="empty"><strong>No vehicles found</strong>Add a vehicle or clear search.</div>';
+  }
+
+  function renderAll() {
+    renderCards();
+    renderMaintenanceTasks();
+    renderVehicles();
+  }
+
   function openEditor(entry = null) {
     form.reset();
     draftDocs = entry ? structuredClone(entry.documents || []) : [];
-    draftServices = entry ? structuredClone(entry.services || []) : [];
-    draftCalls = entry ? structuredClone(entry.calls || []) : [];
-    svcEditId = null;
-    resetServiceInputs();
-    renderServiceList();
-    resetCallInputs();
-    renderCallList();
-    document.getElementById("dialogTitle").textContent = entry ? "Edit Household Page" : "Add Household Page";
+    document.getElementById("dialogTitle").textContent = entry ? "Edit Service" : "Add Service";
     document.getElementById("entryId").value = entry?.id || "";
+    document.getElementById("title").value = entry?.title || "";
     document.getElementById("category").value = entry?.category || "Other";
     document.getElementById("vendor").value = entry?.vendor || "";
-    document.getElementById("nextDate").value = entry?.nextDate || "";
+    document.getElementById("lastDate").value = entry?.lastDate || "";
+    document.getElementById("note").value = entry?.note || "";
     document.getElementById("contactName").value = entry?.contactName || "";
     document.getElementById("phone").value = entry?.phone || "";
     document.getElementById("email").value = entry?.email || "";
     document.getElementById("website").value = entry?.website || "";
     document.getElementById("address").value = entry?.address || "";
-    docsHelp.textContent = firebaseSync.storageReady
-      ? "Documents sync to all devices through Firebase Storage."
-      : "Documents are saved in this browser with the page.";
     renderAttachedDocs();
     dialog.showModal();
   }
@@ -1131,304 +1496,22 @@
     });
   }
 
-  /* ---------- Service history editor ---------- */
-  let draftServices = [];
-  let svcEditId = null;
-  let svcDraftDocs = [];
-  const serviceList = document.getElementById("serviceList");
-  const svcDate = document.getElementById("svcDate");
-  const svcNote = document.getElementById("svcNote");
-  const svcDocs = document.getElementById("svcDocs");
-  const svcDocList = document.getElementById("svcDocList");
-  const svcAddBtn = document.getElementById("svcAddBtn");
-  const svcCancelEditBtn = document.getElementById("svcCancelEditBtn");
-
-  function sortedDraftServices() {
-    return [...draftServices].sort((a, b) => {
-      if (!a.date) return 1;
-      if (!b.date) return -1;
-      return a.date < b.date ? 1 : -1;
-    });
+  function openServiceEditor(entry) {
+    serviceForm.reset();
+    document.getElementById("serviceDialogTitle").textContent = `Add Service - ${entry.title || "Service"}`;
+    document.getElementById("serviceEntryId").value = entry.id;
+    document.getElementById("serviceDate").value = new Date().toISOString().slice(0, 10);
+    serviceDialog.showModal();
   }
 
-  function resetServiceInputs() {
-    svcDate.value = "";
-    svcNote.value = "";
-    svcDocs.value = "";
-    svcDraftDocs = [];
-    svcEditId = null;
-    svcAddBtn.textContent = "+ Add service";
-    svcCancelEditBtn.hidden = true;
-    renderDocRows(svcDocList, svcDraftDocs, "svc-doc");
+  function openServiceDetails(entry, serviceId) {
+    const service = serviceHistoryFor(entry).find(item => item.id === serviceId);
+    if (!service) return;
+    document.getElementById("serviceViewTitle").textContent = entry.title || "Service Details";
+    document.getElementById("serviceViewDate").textContent = formatDate(service.date);
+    document.getElementById("serviceViewNote").textContent = service.note || "No service note saved.";
+    serviceViewDialog.showModal();
   }
-
-  function renderDocRows(container, docs, removeKey) {
-    container.innerHTML = "";
-    docs.forEach((doc, index) => {
-      const row = document.createElement("div");
-      row.className = "attached-row";
-      row.innerHTML = `<span>${escapeHtml(doc.name)}</span><button class="btn small ghost" type="button" data-${removeKey}="${index}">Remove</button>`;
-      container.appendChild(row);
-    });
-  }
-
-  function renderServiceList() {
-    serviceList.innerHTML = "";
-    if (!draftServices.length) {
-      serviceList.innerHTML = '<p class="help">No services yet. Add the first one below.</p>';
-      return;
-    }
-    sortedDraftServices().forEach(svc => {
-      const preview = (svc.note || "").split("\n")[0].slice(0, 60) || "No note";
-      const docCount = (svc.documents || []).length;
-      const row = document.createElement("div");
-      row.className = "attached-row";
-      row.innerHTML = `
-        <span>${svc.date ? formatDate(svc.date) : "No date"} &middot; ${escapeHtml(preview)}${docCount ? ` &middot; ${docCount} ${docCount === 1 ? "doc" : "docs"}` : ""}</span>
-        <span style="display:flex; gap:6px; flex:none;">
-          <button class="btn small ghost" type="button" data-edit-svc="${svc.id}">Edit</button>
-          <button class="btn small ghost" type="button" data-remove-svc="${svc.id}">Remove</button>
-        </span>`;
-      serviceList.appendChild(row);
-    });
-  }
-
-  svcDocs.addEventListener("change", async event => {
-    const converted = await Promise.all([...event.target.files].map(readFileAsDataUrl));
-    svcDraftDocs = [...svcDraftDocs, ...converted];
-    svcDocs.value = "";
-    renderDocRows(svcDocList, svcDraftDocs, "svc-doc");
-  });
-
-  svcDocList.addEventListener("click", event => {
-    const button = event.target.closest("[data-svc-doc]");
-    if (!button) return;
-    svcDraftDocs.splice(Number(button.dataset.svcDoc), 1);
-    renderDocRows(svcDocList, svcDraftDocs, "svc-doc");
-  });
-
-  svcAddBtn.addEventListener("click", () => {
-    const note = svcNote.value.trim();
-    const date = svcDate.value;
-    if (!note && !date && !svcDraftDocs.length) return;
-    if (svcEditId) {
-      draftServices = draftServices.map(svc => svc.id === svcEditId ? { ...svc, date, note, documents: svcDraftDocs } : svc);
-    } else {
-      draftServices.push({ id: uid(), date, note, documents: svcDraftDocs });
-    }
-    resetServiceInputs();
-    renderServiceList();
-  });
-
-  svcCancelEditBtn.addEventListener("click", resetServiceInputs);
-
-  /* ---------- Phone call editor ---------- */
-  let draftCalls = [];
-  let callEditId = null;
-  const callList = document.getElementById("callList");
-  const callDate = document.getElementById("callDate");
-  const callPerson = document.getElementById("callPerson");
-  const callNote = document.getElementById("callNote");
-  const callAddBtn = document.getElementById("callAddBtn");
-  const callCancelEditBtn = document.getElementById("callCancelEditBtn");
-
-  function sortedDraftCalls() {
-    return [...draftCalls].sort((a, b) => {
-      if (!a.date) return 1;
-      if (!b.date) return -1;
-      return a.date < b.date ? 1 : -1;
-    });
-  }
-
-  function resetCallInputs() {
-    callDate.value = "";
-    callPerson.value = "";
-    callNote.value = "";
-    callEditId = null;
-    callAddBtn.textContent = "+ Add call";
-    callCancelEditBtn.hidden = true;
-  }
-
-  function renderCallList() {
-    callList.innerHTML = "";
-    if (!draftCalls.length) {
-      callList.innerHTML = '<p class="help">No calls yet. Add the first one below.</p>';
-      return;
-    }
-    sortedDraftCalls().forEach(call => {
-      const preview = (call.note || "").split("\n")[0].slice(0, 60);
-      const row = document.createElement("div");
-      row.className = "attached-row";
-      row.innerHTML = `
-        <span>${call.date ? formatDate(call.date) : "No date"} &middot; ${call.person ? escapeHtml(call.person) : "No name"}${preview ? ` &middot; ${escapeHtml(preview)}` : ""}</span>
-        <span style="display:flex; gap:6px; flex:none;">
-          <button class="btn small ghost" type="button" data-edit-call="${call.id}">Edit</button>
-          <button class="btn small ghost" type="button" data-remove-call="${call.id}">Remove</button>
-        </span>`;
-      callList.appendChild(row);
-    });
-  }
-
-  callAddBtn.addEventListener("click", () => {
-    const person = callPerson.value.trim();
-    const note = callNote.value.trim();
-    const date = callDate.value;
-    if (!person && !note && !date) return;
-    if (callEditId) {
-      draftCalls = draftCalls.map(call => call.id === callEditId ? { ...call, date, person, note } : call);
-    } else {
-      draftCalls.push({ id: uid(), date, person, note });
-    }
-    resetCallInputs();
-    renderCallList();
-  });
-
-  callCancelEditBtn.addEventListener("click", resetCallInputs);
-
-  callList.addEventListener("click", event => {
-    const editBtn = event.target.closest("[data-edit-call]");
-    if (editBtn) {
-      const call = draftCalls.find(item => item.id === editBtn.dataset.editCall);
-      if (!call) return;
-      callEditId = call.id;
-      callDate.value = call.date || "";
-      callPerson.value = call.person || "";
-      callNote.value = call.note || "";
-      callAddBtn.textContent = "Update call";
-      callCancelEditBtn.hidden = false;
-      callPerson.focus();
-      return;
-    }
-    const removeBtn = event.target.closest("[data-remove-call]");
-    if (removeBtn) {
-      draftCalls = draftCalls.filter(item => item.id !== removeBtn.dataset.removeCall);
-      if (callEditId === removeBtn.dataset.removeCall) resetCallInputs();
-      renderCallList();
-    }
-  });
-
-  serviceList.addEventListener("click", event => {
-    const editBtn = event.target.closest("[data-edit-svc]");
-    if (editBtn) {
-      const svc = draftServices.find(item => item.id === editBtn.dataset.editSvc);
-      if (!svc) return;
-      svcEditId = svc.id;
-      svcDate.value = svc.date || "";
-      svcNote.value = svc.note || "";
-      svcDraftDocs = structuredClone(svc.documents || []);
-      renderDocRows(svcDocList, svcDraftDocs, "svc-doc");
-      svcAddBtn.textContent = "Update service";
-      svcCancelEditBtn.hidden = false;
-      svcNote.focus();
-      return;
-    }
-    const removeBtn = event.target.closest("[data-remove-svc]");
-    if (removeBtn) {
-      draftServices = draftServices.filter(item => item.id !== removeBtn.dataset.removeSvc);
-      if (svcEditId === removeBtn.dataset.removeSvc) resetServiceInputs();
-      renderServiceList();
-    }
-  });
-
-  /* ---------- Quick-add service from a card ---------- */
-  const svcDialog = document.getElementById("svcDialog");
-  const svcQuickForm = document.getElementById("svcQuickForm");
-  const svcDialogTitle = document.getElementById("svcDialogTitle");
-  const svcEntryId = document.getElementById("svcEntryId");
-  const svcQuickDate = document.getElementById("svcQuickDate");
-  const svcQuickNote = document.getElementById("svcQuickNote");
-  const svcQuickDocs = document.getElementById("svcQuickDocs");
-  const svcQuickDocList = document.getElementById("svcQuickDocList");
-  const svcQuickSave = document.getElementById("svcQuickSave");
-  const svcQuickCancel = document.getElementById("svcQuickCancel");
-  const svcClose = document.getElementById("svcClose");
-  let quickDraftDocs = [];
-
-  function openQuickService(entry) {
-    svcQuickForm.reset();
-    quickDraftDocs = [];
-    renderDocRows(svcQuickDocList, quickDraftDocs, "quick-doc");
-    svcEntryId.value = entry.id;
-    svcDialogTitle.textContent = `Add Service - ${entry.category || "Other"}`;
-    svcQuickDate.value = new Date().toISOString().slice(0, 10);
-    svcDialog.showModal();
-    svcQuickNote.focus();
-  }
-
-  svcQuickDocs.addEventListener("change", async event => {
-    const converted = await Promise.all([...event.target.files].map(readFileAsDataUrl));
-    quickDraftDocs = [...quickDraftDocs, ...converted];
-    svcQuickDocs.value = "";
-    renderDocRows(svcQuickDocList, quickDraftDocs, "quick-doc");
-  });
-
-  svcQuickDocList.addEventListener("click", event => {
-    const button = event.target.closest("[data-quick-doc]");
-    if (!button) return;
-    quickDraftDocs.splice(Number(button.dataset.quickDoc), 1);
-    renderDocRows(svcQuickDocList, quickDraftDocs, "quick-doc");
-  });
-
-  svcQuickCancel.addEventListener("click", () => svcDialog.close());
-  svcClose.addEventListener("click", () => svcDialog.close());
-
-  svcQuickForm.addEventListener("submit", async event => {
-    event.preventDefault();
-    const entry = entries.find(item => item.id === svcEntryId.value);
-    if (!entry) { svcDialog.close(); return; }
-    svcQuickSave.disabled = true;
-    svcQuickSave.textContent = "Saving...";
-    try {
-      const documents = await finalizeDocList(quickDraftDocs, entry.id);
-      entry.services = [...(entry.services || []), { id: uid(), date: svcQuickDate.value, note: svcQuickNote.value.trim(), documents }];
-      entry.updatedAt = new Date().toISOString();
-      saveEntries();
-      svcDialog.close();
-      renderCards();
-    } finally {
-      svcQuickSave.disabled = false;
-      svcQuickSave.textContent = "Save Service";
-    }
-  });
-
-  /* ---------- Quick-add phone call from a card ---------- */
-  const callDialog = document.getElementById("callDialog");
-  const callQuickForm = document.getElementById("callQuickForm");
-  const callDialogTitle = document.getElementById("callDialogTitle");
-  const callEntryId = document.getElementById("callEntryId");
-  const callQuickDate = document.getElementById("callQuickDate");
-  const callQuickPerson = document.getElementById("callQuickPerson");
-  const callQuickNote = document.getElementById("callQuickNote");
-  const callQuickCancel = document.getElementById("callQuickCancel");
-  const callClose = document.getElementById("callClose");
-
-  function openQuickCall(entry) {
-    callQuickForm.reset();
-    callEntryId.value = entry.id;
-    callDialogTitle.textContent = `Add Phone Call - ${entry.category || "Other"}`;
-    callQuickDate.value = new Date().toISOString().slice(0, 10);
-    callDialog.showModal();
-    callQuickPerson.focus();
-  }
-
-  callQuickCancel.addEventListener("click", () => callDialog.close());
-  callClose.addEventListener("click", () => callDialog.close());
-
-  callQuickForm.addEventListener("submit", event => {
-    event.preventDefault();
-    const entry = entries.find(item => item.id === callEntryId.value);
-    if (!entry) { callDialog.close(); return; }
-    entry.calls = [...(entry.calls || []), {
-      id: uid(),
-      date: callQuickDate.value,
-      person: callQuickPerson.value.trim(),
-      note: callQuickNote.value.trim()
-    }];
-    entry.updatedAt = new Date().toISOString();
-    saveEntries();
-    callDialog.close();
-    renderCards();
-  });
 
   function readFileAsDataUrl(file) {
     return new Promise((resolve, reject) => {
@@ -1439,427 +1522,136 @@
     });
   }
 
-  async function finalizeDocList(list, entryId) {
-    const finalDocs = [];
-    for (const doc of list) {
-      if (doc.url || (!doc.data && doc.docId)) {
-        // Already uploaded, or metadata for a doc stored on another device.
-        finalDocs.push(doc);
-        continue;
-      }
-      if (!doc.data) { finalDocs.push(doc); continue; }
-
-      if (firebaseSync.storageReady) {
-        try {
-          const { ref, uploadString, getDownloadURL } = firebaseSync.storageFns;
-          const path = `households/home/${entryId}/${uid()}-${doc.name}`;
-          const storageRef = ref(firebaseSync.storage, path);
-          await uploadString(storageRef, doc.data, "data_url");
-          const url = await getDownloadURL(storageRef);
-          finalDocs.push({ name: doc.name, type: doc.type || "", size: doc.size || 0, url, path });
-          continue;
-        } catch {
-          // Fall through to local storage below.
-        }
-      }
-      const docId = uid();
-      try {
-        await docsDB.put(docId, doc.data);
-        finalDocs.push({ name: doc.name, type: doc.type || "", size: doc.size || 0, docId, storedLocally: true });
-      } catch {
-        await showNotice(`"${doc.name}" could not be saved. Try a smaller file or export a backup first.`);
-      }
-    }
-    return finalDocs;
-  }
-
-  async function cleanupRemovedDocs(oldDocs, newDocs) {
-    const kept = new Set(newDocs.map(doc => doc.docId || doc.path).filter(Boolean));
-    for (const doc of oldDocs || []) {
-      const key = doc.docId || doc.path;
-      if (!key || kept.has(key)) continue;
-      if (doc.docId) { try { await docsDB.delete(doc.docId); } catch {} }
-      if (doc.path && firebaseSync.storageReady) {
-        try {
-          const { ref, deleteObject } = firebaseSync.storageFns;
-          await deleteObject(ref(firebaseSync.storage, doc.path));
-        } catch {}
-      }
-    }
-  }
-
-  /* ---------- Cloud sync ---------- */
-  function hasFirebaseConfig() {
-    const cfg = window.HH_FIREBASE_CONFIG || {};
-    return !!(cfg.apiKey && cfg.projectId && cfg.appId && !String(cfg.apiKey).includes("PASTE_"));
-  }
-
-  function entriesForCloud() {
-    const stripDocs = docs => (docs || []).map(doc => {
-      const { data, ...meta } = doc;
-      return meta;
-    });
-    return entries.map(entry => ({
-      ...entry,
-      documents: stripDocs(entry.documents),
-      services: (entry.services || []).map(svc => ({ ...svc, documents: stripDocs(svc.documents) }))
-    }));
-  }
-
-  function mergeEntries(localList, cloudList) {
-    const del = new Set(deletedIds);
-    const map = new Map();
-    (cloudList || []).forEach(entry => { if (!del.has(entry.id)) map.set(entry.id, entry); });
-    (localList || []).forEach(entry => {
-      if (del.has(entry.id)) return;
-      const existing = map.get(entry.id);
-      if (!existing) { map.set(entry.id, entry); return; }
-      if ((entry.updatedAt || "") > (existing.updatedAt || "")) map.set(entry.id, entry);
-    });
-    return [...map.values()];
-  }
-
-  function queueCloudSave() {
-    clearTimeout(saveTimer);
-    saveTimer = null;
-    if (!firebaseSync.ready) {
-      updateSyncStatus("Saved on this device");
-      return;
-    }
-    updateSyncStatus("Saving shared details...");
-    saveTimer = setTimeout(saveToCloud, 450);
-  }
-
-  async function saveToCloud() {
-    clearTimeout(saveTimer);
-    saveTimer = null;
-    if (!firebaseSync.ready) return;
-    try {
-      const updatedAt = new Date().toISOString();
-      firebaseSync.lastRemoteAt = updatedAt;
-      await firebaseSync.setDoc(firebaseSync.docRef, {
-        entries: entriesForCloud(),
-        deletedIds: deletedIds.slice(-200),
-        pinHash: pinHash || null,
-        updatedAt,
-        note: CLOUD_DOC_NOTE
-      }, { merge: true });
-      updateSyncStatus("Synced with Firebase");
-    } catch (err) {
-      console.error("Firebase save failed:", err);
-      updateSyncStatus(firebaseErrorMessage(err, "Saved here; Firebase sync failed"));
-    }
-  }
-
-  function applyRemoteSnapshot(data, isInitial) {
-    applyingRemote = true;
-    const remoteDeleted = Array.isArray(data.deletedIds) ? data.deletedIds : [];
-    deletedIds = [...new Set([...deletedIds, ...remoteDeleted])];
-    entries = mergeEntries(entries, data.entries).filter(entry => !deletedIds.includes(entry.id));
-    migrateServices(entries);
-    const remotePin = data.pinHash || "";
-    if (remotePin !== pinHash) {
-      pinHash = remotePin;
-      if (pinHash) localStorage.setItem(PIN_KEY, pinHash);
-      else localStorage.removeItem(PIN_KEY);
-      if (isInitial) maybeLock();
-    }
-    saveEntries(true);
-    applyingRemote = false;
-    renderCards();
-  }
-
-  async function initFirebaseSync() {
-    if (!hasFirebaseConfig()) {
-      updateSyncStatus("Saved on this device - add Firebase config to sync");
-      return;
-    }
-    try {
-      updateSyncStatus("Connecting to Firebase...");
-      const appMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js");
-      const authMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js");
-      const fireMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
-      const app = appMod.initializeApp(window.HH_FIREBASE_CONFIG);
-      const auth = authMod.getAuth(app);
-      await authMod.signInAnonymously(auth);
-      const db = fireMod.getFirestore(app);
-      const docPath = window.HH_FIREBASE_DOC_PATH || "households/default";
-      firebaseSync.ready = true;
-      firebaseSync.docRef = fireMod.doc(db, ...docPath.split("/"));
-      firebaseSync.onSnapshot = fireMod.onSnapshot;
-      firebaseSync.setDoc = fireMod.setDoc;
-
-      try {
-        const storageMod = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js");
-        firebaseSync.storage = storageMod.getStorage(app);
-        firebaseSync.storageFns = {
-          ref: storageMod.ref,
-          uploadString: storageMod.uploadString,
-          getDownloadURL: storageMod.getDownloadURL,
-          deleteObject: storageMod.deleteObject
-        };
-        firebaseSync.storageReady = true;
-      } catch {
-        firebaseSync.storageReady = false;
-      }
-
-      const snap = await fireMod.getDoc(firebaseSync.docRef);
-      if (snap.exists() && Array.isArray(snap.data().entries)) {
-        applyRemoteSnapshot(snap.data(), true);
-        firebaseSync.lastRemoteAt = snap.data().updatedAt || null;
-        updateSyncStatus("Loaded shared Firebase data");
-        // Push the merge result back so other devices pick up local-only entries.
-        await saveToCloud();
-      } else {
-        await saveToCloud();
-      }
-
-      firebaseSync.onSnapshot(firebaseSync.docRef, snap => {
-        if (!snap.exists() || !Array.isArray(snap.data().entries)) return;
-        const updatedAt = snap.data().updatedAt || null;
-        if (updatedAt && updatedAt === firebaseSync.lastRemoteAt) return;
-        firebaseSync.lastRemoteAt = updatedAt;
-        applyRemoteSnapshot(snap.data(), false);
-        updateSyncStatus("Updated from Firebase");
-      });
-      updateSyncStatus("Synced with Firebase");
-    } catch (err) {
-      firebaseSync.ready = false;
-      console.error("Firebase connection failed:", err);
-      updateSyncStatus(firebaseErrorMessage(err, "Firebase not connected - saved on this device"));
-    }
-  }
-
-  // Flush pending cloud saves when the tab is hidden or closing.
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden" && saveTimer) saveToCloud();
-  });
-  window.addEventListener("beforeunload", () => {
-    if (saveTimer) saveToCloud();
-  });
-
-  /* ---------- PIN lock ---------- */
-  const lockOverlay = document.getElementById("lockOverlay");
-  const lockPinInput = document.getElementById("lockPinInput");
-  const lockError = document.getElementById("lockError");
-  const unlockBtn = document.getElementById("unlockBtn");
-  const pinBtn = document.getElementById("pinBtn");
-  const pinDialog = document.getElementById("pinDialog");
-  const pinForm = document.getElementById("pinForm");
-  const pinDialogTitle = document.getElementById("pinDialogTitle");
-  const currentPinLabel = document.getElementById("currentPinLabel");
-  const currentPin = document.getElementById("currentPin");
-  const newPin = document.getElementById("newPin");
-  const pinError = document.getElementById("pinError");
-  const pinCancel = document.getElementById("pinCancel");
-  const pinClose = document.getElementById("pinClose");
-
-  const canHashPin = !!(window.crypto && crypto.subtle);
-
-  async function hashPin(pin) {
-    const buffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`hh-pin:${pin}`));
-    return [...new Uint8Array(buffer)].map(b => b.toString(16).padStart(2, "0")).join("");
-  }
-
-  function maybeLock() {
-    if (pinHash && sessionStorage.getItem("hh-unlocked") !== pinHash) {
-      lockOverlay.classList.add("active");
-      lockOverlay.setAttribute("aria-hidden", "false");
-      lockPinInput.focus();
-    }
-  }
-
-  async function tryUnlock() {
-    const value = lockPinInput.value.trim();
-    if (!value) return;
-    const hashed = await hashPin(value);
-    if (hashed === pinHash) {
-      sessionStorage.setItem("hh-unlocked", pinHash);
-      lockOverlay.classList.remove("active");
-      lockOverlay.setAttribute("aria-hidden", "true");
-      lockPinInput.value = "";
-      lockError.textContent = "";
-    } else {
-      lockError.textContent = "That PIN doesn't match.";
-      lockPinInput.select();
-    }
-  }
-
-  unlockBtn.addEventListener("click", tryUnlock);
-  lockPinInput.addEventListener("keydown", event => { if (event.key === "Enter") tryUnlock(); });
-
-  pinBtn.addEventListener("click", () => {
-    if (!canHashPin) {
-      showNotice("PIN lock needs a secure (https) connection, which this page doesn't have right now.");
-      return;
-    }
-    pinDialogTitle.textContent = pinHash ? "Change or remove PIN" : "Set a PIN";
-    currentPinLabel.hidden = !pinHash;
-    currentPin.value = "";
-    newPin.value = "";
-    pinError.textContent = "";
-    pinDialog.showModal();
-  });
-  pinCancel.addEventListener("click", () => pinDialog.close());
-  pinClose.addEventListener("click", () => pinDialog.close());
-
-  pinForm.addEventListener("submit", async event => {
-    event.preventDefault();
-    pinError.textContent = "";
-    if (pinHash) {
-      const current = await hashPin(currentPin.value.trim());
-      if (current !== pinHash) {
-        pinError.textContent = "Current PIN doesn't match.";
-        return;
-      }
-    }
-    const next = newPin.value.trim();
-    if (next && (next.length < 4 || !/^\d+$/.test(next))) {
-      pinError.textContent = "Use at least 4 digits.";
-      return;
-    }
-    pinHash = next ? await hashPin(next) : "";
-    if (pinHash) {
-      localStorage.setItem(PIN_KEY, pinHash);
-      sessionStorage.setItem("hh-unlocked", pinHash);
-    } else {
-      localStorage.removeItem(PIN_KEY);
-      sessionStorage.removeItem("hh-unlocked");
-    }
-    queueCloudSave();
-    pinDialog.close();
-    await showNotice(pinHash ? "PIN saved. The hub will lock on every synced device." : "PIN removed.");
-  });
-
-  /* ---------- Export / import ---------- */
-  exportBtn.addEventListener("click", async () => {
-    const docsData = {};
-    for (const entry of entries) {
-      for (const doc of allDocs(entry)) {
-        if (doc.docId) {
-          try {
-            const data = await docsDB.get(doc.docId);
-            if (data) docsData[doc.docId] = data;
-          } catch {}
-        }
-      }
-    }
-    const payload = {
-      app: "household-information-hub",
-      version: 3,
-      exportedAt: new Date().toISOString(),
-      entries,
-      deletedIds,
-      docsData
-    };
-    const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const stamp = new Date().toISOString().slice(0, 10);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = `household-hub-backup-${stamp}.json`;
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 4000);
-    updateSyncStatus("Backup exported");
-  });
-
-  importBtn.addEventListener("click", () => importFile.click());
-
-  importFile.addEventListener("change", async event => {
-    const file = event.target.files[0];
-    importFile.value = "";
-    if (!file) return;
-    let payload;
-    try {
-      payload = JSON.parse(await file.text());
-    } catch {
-      await showNotice("That file couldn't be read as a backup.");
-      return;
-    }
-    if (!Array.isArray(payload.entries)) {
-      await showNotice("That file doesn't look like a Household Hub backup.");
-      return;
-    }
-    const proceed = await confirmAction(
-      `Import ${payload.entries.length} page(s)? Matching pages will be updated with the backup's version.`,
-      { title: "Import backup", okText: "OK" }
-    );
-    if (!proceed) return;
-
-    for (const [docId, data] of Object.entries(payload.docsData || {})) {
-      try { await docsDB.put(docId, data); } catch {}
-    }
-    const importedIds = new Set(payload.entries.map(entry => entry.id));
-    deletedIds = deletedIds.filter(id => !importedIds.has(id));
-    const byId = new Map(entries.map(entry => [entry.id, entry]));
-    payload.entries.forEach(entry => byId.set(entry.id, entry));
-    entries = [...byId.values()];
-    saveEntries();
-    renderCards();
-    updateSyncStatus("Backup imported");
-  });
-
-  /* ---------- Events ---------- */
   addBtn.addEventListener("click", () => openEditor());
+  addTaskBtn.addEventListener("click", () => openTaskEditor());
+  addVehicleBtn.addEventListener("click", () => openVehicleEditor());
+  searchInput.addEventListener("input", renderAll);
+  categoryFilter.addEventListener("change", renderAll);
+  taskMenuBtn.addEventListener("click", () => taskDropdown.classList.toggle("open"));
+  prevMonthBtn.addEventListener("click", () => {
+    calendarMonth.setMonth(calendarMonth.getMonth() - 1);
+    renderMaintenanceTasks();
+  });
+  nextMonthBtn.addEventListener("click", () => {
+    calendarMonth.setMonth(calendarMonth.getMonth() + 1);
+    renderMaintenanceTasks();
+  });
   closeDialog.addEventListener("click", () => dialog.close());
   cancelBtn.addEventListener("click", () => dialog.close());
-  searchInput.addEventListener("input", renderCards);
-  categoryFilter.addEventListener("change", renderCards);
-  sortSelect.addEventListener("change", renderCards);
-
-  cards.addEventListener("click", async event => {
-    const docButton = event.target.closest("[data-open-doc]");
-    if (docButton) {
-      const entry = entries.find(item => item.id === docButton.dataset.entry);
-      const svcId = docButton.dataset.svc;
-      const source = svcId
-        ? entry?.services?.find(svc => svc.id === svcId)?.documents
-        : entry?.documents;
-      const doc = source?.[Number(docButton.dataset.index)];
-      if (!doc) return;
-      let dataUrl = doc.data || null;
-      if (!dataUrl && doc.docId) {
-        try { dataUrl = await docsDB.get(doc.docId); } catch {}
-      }
-      if (!dataUrl) {
-        await showNotice(`"${doc.name}" is saved on another device. Open the hub there to view it, or re-upload it here.`);
-        return;
-      }
-      try {
-        const blob = await (await fetch(dataUrl)).blob();
-        const url = URL.createObjectURL(blob);
-        const win = window.open(url, "_blank");
-        if (!win) {
-          const anchor = document.createElement("a");
-          anchor.href = url;
-          anchor.download = doc.name;
-          document.body.appendChild(anchor);
-          anchor.click();
-          anchor.remove();
-        }
-        setTimeout(() => URL.revokeObjectURL(url), 60000);
-      } catch {
-        await showNotice(`"${doc.name}" couldn't be opened.`);
-      }
-      return;
-    }
-
+  closeServiceDialog.addEventListener("click", () => serviceDialog.close());
+  cancelServiceBtn.addEventListener("click", () => serviceDialog.close());
+  closeServiceView.addEventListener("click", () => serviceViewDialog.close());
+  closeTaskDialog.addEventListener("click", () => taskDialog.close());
+  cancelTaskBtn.addEventListener("click", () => taskDialog.close());
+  deleteTaskBtn.addEventListener("click", () => {
+    const id = document.getElementById("taskId").value;
+    const task = maintenanceTasks.find(item => item.id === id);
+    if (!task || !confirm(`Delete "${task.title}"?`)) return;
+    maintenanceTasks = maintenanceTasks.filter(item => item.id !== id);
+    saveEntries();
+    taskDialog.close();
+    renderAll();
+  });
+  closeVehicleDialog.addEventListener("click", () => vehicleDialog.close());
+  cancelVehicleBtn.addEventListener("click", () => vehicleDialog.close());
+  cards.addEventListener("click", event => {
     const button = event.target.closest("button");
     if (!button) return;
     const entry = entries.find(item => item.id === button.dataset.id);
-    if (button.dataset.action === "quickadd" && entry) openQuickService(entry);
-    if (button.dataset.action === "quickcall" && entry) openQuickCall(entry);
+    if (button.dataset.action === "add-service" && entry) openServiceEditor(entry);
+    if (button.dataset.action === "view-service" && entry) openServiceDetails(entry, button.dataset.serviceId);
     if (button.dataset.action === "edit" && entry) openEditor(entry);
-    if (button.dataset.action === "delete" && entry) {
-      const proceed = await confirmAction(`Delete this ${entry.category || "household"} page? This removes it on every synced device.`);
-      if (!proceed) return;
-      await cleanupRemovedDocs(allDocs(entry), []);
+    if (button.dataset.action === "delete" && entry && confirm(`Delete "${entry.title}"?`)) {
       entries = entries.filter(item => item.id !== entry.id);
-      deletedIds = [...new Set([...deletedIds, entry.id])];
       saveEntries();
-      renderCards();
+      renderAll();
+    }
+  });
+
+  function openTaskEditor(task = null) {
+    taskForm.reset();
+    document.getElementById("taskDialogTitle").textContent = task ? "Edit Maintenance Task" : "Add Maintenance Task";
+    document.getElementById("taskId").value = task?.id || "";
+    document.getElementById("taskTitle").value = task?.title || "";
+    document.getElementById("taskEventType").value = task?.eventType || "recurring";
+    document.getElementById("taskLastDone").value = task?.lastDone || "";
+    document.getElementById("taskNextDue").value = task?.nextDue || "";
+    document.getElementById("taskFrequency").value = task?.frequencyDays || "";
+    document.getElementById("taskNotes").value = task?.notes || "";
+    taskDialog.showModal();
+  }
+
+  function openVehicleEditor(vehicle = null) {
+    vehicleForm.reset();
+    document.getElementById("vehicleDialogTitle").textContent = vehicle ? "Edit Vehicle" : "Add Vehicle";
+    document.getElementById("vehicleId").value = vehicle?.id || "";
+    document.getElementById("vehicleName").value = vehicle?.name || "";
+    document.getElementById("vehicleOwner").value = vehicle?.owner || "";
+    document.getElementById("vehiclePlate").value = vehicle?.plate || "";
+    document.getElementById("vehicleVin").value = vehicle?.vin || "";
+    document.getElementById("vehicleInsurance").value = vehicle?.insurance || "";
+    document.getElementById("vehicleInsuranceRenewal").value = vehicle?.insuranceRenewal || "";
+    document.getElementById("vehicleRegistrationMonth").value = vehicle?.registrationMonth || "";
+    document.getElementById("vehicleOilDate").value = vehicle?.oilDate || "";
+    document.getElementById("vehicleOilMileage").value = vehicle?.oilMileage || "";
+    document.getElementById("vehicleTireDate").value = vehicle?.tireDate || "";
+    document.getElementById("vehicleInspection").value = vehicle?.inspection || "";
+    vehicleDialog.showModal();
+  }
+
+  maintenanceCalendar.addEventListener("click", event => {
+    const button = event.target.closest("button");
+    if (!button) return;
+    const task = maintenanceTasks.find(item => item.id === button.dataset.id);
+    const entry = entries.find(item => item.id === button.dataset.id);
+    const vehicle = vehicles.find(item => item.id === button.dataset.id);
+    if (button.dataset.action === "view-service" && entry) openServiceDetails(entry, button.dataset.serviceId);
+    if (button.dataset.vehicleAction === "edit" && vehicle) openVehicleEditor(vehicle);
+    if (button.dataset.taskAction === "edit" && task) openTaskEditor(task);
+    if (button.dataset.taskAction === "done" && task) {
+      const today = new Date().toISOString().slice(0, 10);
+      maintenanceTasks = maintenanceTasks.map(item => item.id === task.id ? {
+        ...item,
+        lastDone: today,
+        nextDue: addDays(today, item.frequencyDays) || item.nextDue
+      } : item);
+      saveEntries();
+      renderAll();
+    }
+    if (button.dataset.taskAction === "delete" && task && confirm(`Delete "${task.title}"?`)) {
+      maintenanceTasks = maintenanceTasks.filter(item => item.id !== task.id);
+      saveEntries();
+      renderAll();
+    }
+  });
+
+  taskDropdown.addEventListener("click", event => {
+    const button = event.target.closest("button[data-menu-kind]");
+    if (!button) return;
+    taskDropdown.classList.remove("open");
+    if (button.dataset.menuKind === "maintenance") {
+      const task = maintenanceTasks.find(item => item.id === button.dataset.id);
+      if (task) openTaskEditor(task);
+    }
+    if (button.dataset.menuKind === "service") {
+      const entry = entries.find(item => item.id === button.dataset.id);
+      if (entry) openServiceDetails(entry, button.dataset.serviceId);
+    }
+    if (button.dataset.menuKind === "vehicle") {
+      const vehicle = vehicles.find(item => item.id === button.dataset.id);
+      if (vehicle) openVehicleEditor(vehicle);
+    }
+  });
+
+  vehicleList.addEventListener("click", event => {
+    const button = event.target.closest("button");
+    if (!button) return;
+    const vehicle = vehicles.find(item => item.id === button.dataset.id);
+    if (button.dataset.vehicleAction === "edit" && vehicle) openVehicleEditor(vehicle);
+    if (button.dataset.vehicleAction === "delete" && vehicle && confirm(`Delete "${vehicle.name}"?`)) {
+      vehicles = vehicles.filter(item => item.id !== vehicle.id);
+      saveEntries();
+      renderAll();
     }
   });
 
@@ -1878,59 +1670,129 @@
     renderAttachedDocs();
   });
 
+  function saveEntryFromForm(id, documents) {
+    const lastDate = document.getElementById("lastDate").value;
+    const note = document.getElementById("note").value.trim();
+    const existing = entries.find(item => item.id === id);
+    const serviceHistory = upsertServiceHistory(existing?.serviceHistory || [], lastDate, note);
+    const entry = {
+      id,
+      title: document.getElementById("title").value.trim(),
+      category: document.getElementById("category").value,
+      vendor: document.getElementById("vendor").value.trim(),
+      lastDate,
+      note,
+      contactName: document.getElementById("contactName").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      website: document.getElementById("website").value.trim(),
+      address: document.getElementById("address").value.trim(),
+      documents,
+      serviceHistory
+    };
+
+    entries = entries.some(item => item.id === id)
+      ? entries.map(item => item.id === id ? entry : item)
+      : [entry, ...entries];
+    saveEntries();
+    dialog.close();
+    renderAll();
+  }
+
+  taskForm.addEventListener("submit", event => {
+    event.preventDefault();
+    const id = document.getElementById("taskId").value || uid();
+    const lastDone = document.getElementById("taskLastDone").value;
+    const frequencyDays = document.getElementById("taskFrequency").value;
+    const nextDue = document.getElementById("taskNextDue").value || addDays(lastDone, frequencyDays);
+    const task = {
+      id,
+      title: document.getElementById("taskTitle").value.trim(),
+      eventType: document.getElementById("taskEventType").value,
+      lastDone,
+      nextDue,
+      frequencyDays,
+      notes: document.getElementById("taskNotes").value.trim()
+    };
+    maintenanceTasks = maintenanceTasks.some(item => item.id === id)
+      ? maintenanceTasks.map(item => item.id === id ? task : item)
+      : [task, ...maintenanceTasks];
+    saveEntries();
+    taskDialog.close();
+    renderAll();
+  });
+
+  vehicleForm.addEventListener("submit", event => {
+    event.preventDefault();
+    const id = document.getElementById("vehicleId").value || uid();
+    const vehicle = {
+      id,
+      name: document.getElementById("vehicleName").value.trim(),
+      owner: document.getElementById("vehicleOwner").value.trim(),
+      plate: document.getElementById("vehiclePlate").value.trim(),
+      vin: document.getElementById("vehicleVin").value.trim(),
+      insurance: document.getElementById("vehicleInsurance").value.trim(),
+      insuranceRenewal: document.getElementById("vehicleInsuranceRenewal").value,
+      registrationMonth: document.getElementById("vehicleRegistrationMonth").value.trim(),
+      oilDate: document.getElementById("vehicleOilDate").value,
+      oilMileage: document.getElementById("vehicleOilMileage").value.trim(),
+      tireDate: document.getElementById("vehicleTireDate").value,
+      inspection: document.getElementById("vehicleInspection").value.trim()
+    };
+    vehicles = vehicles.some(item => item.id === id)
+      ? vehicles.map(item => item.id === id ? vehicle : item)
+      : [vehicle, ...vehicles];
+    saveEntries();
+    vehicleDialog.close();
+    renderAll();
+  });
+
+  serviceForm.addEventListener("submit", event => {
+    event.preventDefault();
+    const entryId = document.getElementById("serviceEntryId").value;
+    const entry = entries.find(item => item.id === entryId);
+    if (!entry) return;
+    const service = {
+      id: serviceUid(),
+      date: document.getElementById("serviceDate").value,
+      note: document.getElementById("serviceNote").value.trim()
+    };
+    const serviceHistory = [...serviceHistoryFor(entry), service]
+      .filter(item => item.date || item.note)
+      .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    const latest = serviceHistory[0] || service;
+    entries = entries.map(item => item.id === entryId ? {
+      ...item,
+      serviceHistory,
+      lastDate: latest.date || "",
+      note: latest.note || ""
+    } : item);
+    saveEntries();
+    serviceDialog.close();
+    renderAll();
+  });
+
   form.addEventListener("submit", async event => {
     event.preventDefault();
-    saveBtn.disabled = true;
-    saveBtn.textContent = "Saving...";
+    const id = document.getElementById("entryId").value || uid();
+    const saveButton = form.querySelector('button[type="submit"]');
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving...";
+    let documents = draftDocs;
     try {
-      const id = document.getElementById("entryId").value || uid();
-      const previous = entries.find(item => item.id === id);
-      const documents = await finalizeDocList(draftDocs, id);
-      const services = [];
-      for (const svc of draftServices) {
-        services.push({ ...svc, documents: await finalizeDocList(svc.documents || [], id) });
-      }
-      const newAllDocs = [...documents, ...services.flatMap(svc => svc.documents || [])];
-      await cleanupRemovedDocs(previous ? allDocs(previous) : [], newAllDocs);
-      const entry = {
-        id,
-        category: document.getElementById("category").value,
-        vendor: document.getElementById("vendor").value.trim(),
-        nextDate: document.getElementById("nextDate").value,
-        services,
-        calls: structuredClone(draftCalls),
-        contactName: document.getElementById("contactName").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        website: normalizeWebsite(document.getElementById("website").value),
-        address: document.getElementById("address").value.trim(),
-        documents,
-        updatedAt: new Date().toISOString()
-      };
-
-      entries = entries.some(item => item.id === id)
-        ? entries.map(item => item.id === id ? entry : item)
-        : [entry, ...entries];
-      deletedIds = deletedIds.filter(deletedId => deletedId !== id);
-      saveEntries();
-      dialog.close();
-      renderCards();
+      documents = await uploadDraftDocuments(id, draftDocs);
+      saveEntryFromForm(id, documents);
+    } catch {
+      saveEntryFromForm(id, draftDocs);
+      updateSyncStatus("Document upload failed - saved local copy");
     } finally {
-      saveBtn.disabled = false;
-      saveBtn.textContent = "Save Page";
+      saveButton.disabled = false;
+      saveButton.textContent = "Save Page";
     }
   });
 
-  /* ---------- Boot ---------- */
-  (async function boot() {
-    entries = loadRawEntries();
-    deletedIds = loadDeletedIds();
-    if (migrateServices(entries)) saveEntries(true);
-    entries = await migrateLegacyDocs(entries);
-    maybeLock();
-    renderCards();
-    initFirebaseSync();
-  })();
+  renderAll();
+  initFirebaseSync();
 </script>
 </body>
 </html>
