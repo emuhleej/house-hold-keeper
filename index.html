@@ -189,6 +189,12 @@
     justify-content: space-between;
     gap: 10px;
   }
+  .inline-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
   .section-head h3 { margin: 0; color: var(--plum); font-size: 1rem; }
   .history-list { display: flex; flex-wrap: wrap; gap: 8px; }
   .history-chip {
@@ -690,6 +696,55 @@
     </div>
   </dialog>
 
+  <dialog id="callDialog">
+    <div class="modal-head">
+      <h2 id="callDialogTitle">Add Call</h2>
+      <button class="close" id="closeCallDialog" type="button" aria-label="Close">x</button>
+    </div>
+    <form id="callForm">
+      <input type="hidden" id="callEntryId">
+      <div class="form-grid">
+        <label>
+          Call date
+          <input id="callDate" type="date" required>
+        </label>
+        <label>
+          Contact person
+          <input id="callPerson" placeholder="Who you spoke with">
+        </label>
+        <label class="full">
+          Call notes
+          <textarea id="callNote" required placeholder="What was discussed, next steps, confirmation numbers, pricing, or follow-up needed..."></textarea>
+        </label>
+      </div>
+      <div class="form-actions">
+        <button class="btn ghost" id="cancelCallBtn" type="button">Cancel</button>
+        <button class="btn teal" type="submit">Save Call</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="callViewDialog">
+    <div class="modal-head">
+      <h2 id="callViewTitle">Call Details</h2>
+      <button class="close" id="closeCallView" type="button" aria-label="Close">x</button>
+    </div>
+    <div class="service-detail">
+      <div>
+        <span class="label">Date</span>
+        <span class="date-pill" id="callViewDate"></span>
+      </div>
+      <div>
+        <span class="label">Contact person</span>
+        <div class="note" id="callViewPerson"></div>
+      </div>
+      <div>
+        <span class="label">Call notes</span>
+        <div class="note" id="callViewNote"></div>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="taskDialog">
     <div class="modal-head">
       <h2 id="taskDialogTitle">Add Maintenance Task</h2>
@@ -913,6 +968,12 @@
   const cancelServiceBtn = document.getElementById("cancelServiceBtn");
   const serviceViewDialog = document.getElementById("serviceViewDialog");
   const closeServiceView = document.getElementById("closeServiceView");
+  const callDialog = document.getElementById("callDialog");
+  const callForm = document.getElementById("callForm");
+  const closeCallDialog = document.getElementById("closeCallDialog");
+  const cancelCallBtn = document.getElementById("cancelCallBtn");
+  const callViewDialog = document.getElementById("callViewDialog");
+  const closeCallView = document.getElementById("closeCallView");
   const taskDialog = document.getElementById("taskDialog");
   const taskForm = document.getElementById("taskForm");
   const closeTaskDialog = document.getElementById("closeTaskDialog");
@@ -1122,6 +1183,10 @@
     return `service-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }
 
+  function callUid() {
+    return `call-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
   function escapeHtml(value) {
     return String(value || "")
       .replaceAll("&", "&amp;")
@@ -1184,6 +1249,12 @@
     return history[0] || { date: entry.lastDate || "", note: entry.note || "" };
   }
 
+  function callHistoryFor(entry) {
+    return (Array.isArray(entry.callHistory) ? [...entry.callHistory] : [])
+      .filter(item => item.date || item.note || item.person)
+      .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  }
+
   function upsertServiceHistory(existingHistory, date, note) {
     const history = Array.isArray(existingHistory) ? [...existingHistory] : [];
     if (!date && !note) return history;
@@ -1204,6 +1275,7 @@
       entry.lastDate,
       entry.note,
       ...serviceHistoryFor(entry).flatMap(item => [item.date, item.note]),
+      ...callHistoryFor(entry).flatMap(item => [item.date, item.person, item.note]),
       entry.contactName,
       entry.phone,
       entry.email,
@@ -1263,7 +1335,7 @@
     }
     servicesSection.style.display = "";
     const list = filteredEntries().filter(entry => {
-      return entry.title || entry.vendor || entry.note || entry.contactName || entry.phone || entry.email || entry.website || entry.address || (entry.documents || []).length || serviceHistoryFor(entry).length;
+      return entry.title || entry.vendor || entry.note || entry.contactName || entry.phone || entry.email || entry.website || entry.address || (entry.documents || []).length || serviceHistoryFor(entry).length || callHistoryFor(entry).length;
     });
     cards.innerHTML = "";
 
@@ -1276,10 +1348,16 @@
       const article = document.createElement("article");
       article.className = "card";
       const history = serviceHistoryFor(entry);
+      const calls = callHistoryFor(entry);
       const latest = latestService(entry);
       const historyChips = history.map(item => `
         <button class="history-chip" type="button" data-action="view-service" data-id="${entry.id}" data-service-id="${item.id}">
-          ${formatDate(item.date)}
+          Service ${formatDate(item.date)}
+        </button>
+      `).join("");
+      const callChips = calls.map(item => `
+        <button class="history-chip" type="button" data-action="view-call" data-id="${entry.id}" data-call-id="${item.id}">
+          Call ${formatDate(item.date)}
         </button>
       `).join("");
       const phoneNumber = normalizePhone(entry.phone);
@@ -1318,10 +1396,13 @@
           </section>
           <section class="service-history">
             <div class="section-head">
-              <h3>Service History</h3>
-              <button class="btn small teal" type="button" data-action="add-service" data-id="${entry.id}">+ Add Service</button>
+              <h3>Services and Calls</h3>
+              <div class="inline-actions">
+                <button class="btn small teal" type="button" data-action="add-service" data-id="${entry.id}">+ Add Service</button>
+                <button class="btn small ghost" type="button" data-action="add-call" data-id="${entry.id}">+ Add Call</button>
+              </div>
             </div>
-            <div class="history-list">${historyChips || "<span>No saved service dates yet.</span>"}</div>
+            <div class="history-list">${historyChips || callChips ? `${historyChips}${callChips}` : "<span>No saved services or calls yet.</span>"}</div>
           </section>
           <div>
             <span class="label">Contact Info</span>
@@ -1513,6 +1594,25 @@
     serviceViewDialog.showModal();
   }
 
+  function openCallEditor(entry) {
+    callForm.reset();
+    document.getElementById("callDialogTitle").textContent = `Add Call - ${entry.title || "Vendor"}`;
+    document.getElementById("callEntryId").value = entry.id;
+    document.getElementById("callDate").value = new Date().toISOString().slice(0, 10);
+    document.getElementById("callPerson").value = entry.contactName || "";
+    callDialog.showModal();
+  }
+
+  function openCallDetails(entry, callId) {
+    const call = callHistoryFor(entry).find(item => item.id === callId);
+    if (!call) return;
+    document.getElementById("callViewTitle").textContent = entry.title || "Call Details";
+    document.getElementById("callViewDate").textContent = formatDate(call.date);
+    document.getElementById("callViewPerson").textContent = call.person || "No person saved.";
+    document.getElementById("callViewNote").textContent = call.note || "No call note saved.";
+    callViewDialog.showModal();
+  }
+
   function readFileAsDataUrl(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -1541,6 +1641,9 @@
   closeServiceDialog.addEventListener("click", () => serviceDialog.close());
   cancelServiceBtn.addEventListener("click", () => serviceDialog.close());
   closeServiceView.addEventListener("click", () => serviceViewDialog.close());
+  closeCallDialog.addEventListener("click", () => callDialog.close());
+  cancelCallBtn.addEventListener("click", () => callDialog.close());
+  closeCallView.addEventListener("click", () => callViewDialog.close());
   closeTaskDialog.addEventListener("click", () => taskDialog.close());
   cancelTaskBtn.addEventListener("click", () => taskDialog.close());
   deleteTaskBtn.addEventListener("click", () => {
@@ -1560,6 +1663,8 @@
     const entry = entries.find(item => item.id === button.dataset.id);
     if (button.dataset.action === "add-service" && entry) openServiceEditor(entry);
     if (button.dataset.action === "view-service" && entry) openServiceDetails(entry, button.dataset.serviceId);
+    if (button.dataset.action === "add-call" && entry) openCallEditor(entry);
+    if (button.dataset.action === "view-call" && entry) openCallDetails(entry, button.dataset.callId);
     if (button.dataset.action === "edit" && entry) openEditor(entry);
     if (button.dataset.action === "delete" && entry && confirm(`Delete "${entry.title}"?`)) {
       entries = entries.filter(item => item.id !== entry.id);
@@ -1688,7 +1793,8 @@
       website: document.getElementById("website").value.trim(),
       address: document.getElementById("address").value.trim(),
       documents,
-      serviceHistory
+      serviceHistory,
+      callHistory: existing?.callHistory || []
     };
 
     entries = entries.some(item => item.id === id)
@@ -1769,6 +1875,29 @@
     } : item);
     saveEntries();
     serviceDialog.close();
+    renderAll();
+  });
+
+  callForm.addEventListener("submit", event => {
+    event.preventDefault();
+    const entryId = document.getElementById("callEntryId").value;
+    const entry = entries.find(item => item.id === entryId);
+    if (!entry) return;
+    const call = {
+      id: callUid(),
+      date: document.getElementById("callDate").value,
+      person: document.getElementById("callPerson").value.trim(),
+      note: document.getElementById("callNote").value.trim()
+    };
+    const callHistory = [...callHistoryFor(entry), call]
+      .filter(item => item.date || item.person || item.note)
+      .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    entries = entries.map(item => item.id === entryId ? {
+      ...item,
+      callHistory
+    } : item);
+    saveEntries();
+    callDialog.close();
     renderAll();
   });
 
